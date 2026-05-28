@@ -1,0 +1,39 @@
+#### 📊 Sales Weekly Report (Week 42)
+
+**Revenue Closed This Week**
+
+* **Total Revenue**: $145,200 (↑ 12% vs. Last Week)
+* **Quota Attainment**: 110% of weekly target ($132,000)
+
+**Pipeline Changes**
+
+* **New Opportunities**: $45,000 (15 new MQLs converted to SQLs)
+* **Advanced to Proposal**: $82,000 (6 deals moving to final negotiation stage)
+* **Closed/Lost**: $12,000 (2 deals lost, primarily due to budget constraints)
+
+**Top Deals Update**
+
+| Deal Name | Value | Status | Next Step |
+| --- | --- | --- | --- |
+| **TechCorp Enterprise License** | $42,000 | Closed Won | Kickoff call scheduled for Tuesday |
+| **Global Retail POS Upgrade** | $28,000 | Proposal | Pending client legal review of terms |
+| **CloudSync Annual Renewal** | $15,000 | Negotiation | Finalizing 10% volume discount approval |
+
+**Activity Metrics**
+
+* **Discovery Calls**: 45 (Target: 40)
+* **Product Demos**: 18 (Target: 15)
+* **In-Person/Zoom Meetings**: 12 (Target: 10)
+* *Insight*: 本周增加的产品演示（Demos）直接带动了进入 Proposal 阶段的订单量，团队整体开拓活跃度超出预期。
+
+**Forecast vs Actual**
+
+* **Forecast (Week 42)**: $132,000
+* **Actual (Week 42)**: $145,200 (+ $13,200)
+* *Insight*: 实际业绩超额完成，主要归功于 TechCorp 的大单审批流程加速，提前在周四完成了签约。
+
+**Key Wins and Losses**
+
+* 🟢 **Win**: 成功赢下 TechCorp 订单。这证明了我们最新版本的数据集成功能对大型企业客户具有决定性的吸引力。
+* 🔴 **Loss**: 丢掉了 Apex Solutions 的初步意向订单（$8,000），客户反馈我们的标准实施周期较长，不满足其紧急上线的需求。
+* 👉 **Next Step**: 下周二将与产研及实施团队召开复盘会，重点探讨如何为中小型客户缩短标准交付的生命周期。

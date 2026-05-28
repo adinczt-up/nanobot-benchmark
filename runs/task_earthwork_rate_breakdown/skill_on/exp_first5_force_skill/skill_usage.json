@@ -1,0 +1,21 @@
+{
+  "skill_mode": "on",
+  "skill_policy": "force-use",
+  "allowed_skills": [
+    "afrexai-construction-estimator"
+  ],
+  "description_only_skills": false,
+  "system_prompt_loaded": true,
+  "description_preloaded": false,
+  "description_presented": false,
+  "skills": {
+    "afrexai-construction-estimator": {
+      "read_file_called": false,
+      "read_file_lines": [],
+      "read_file_paths": []
+    }
+  },
+  "session_files": [
+    "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_rate_breakdown\\skill_on\\exp_first5_force_skill\\workspace\\sessions\\bench_task_earthwork_rate_breakdown_on_exp_first5_force_skill.jsonl"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "skill_mode": "on",
+  "skill_policy": "force-use",
+  "allowed_skills": [
+    "weekly-report-generator"
+  ],
+  "description_only_skills": false,
+  "system_prompt_loaded": true,
+  "description_preloaded": false,
+  "description_presented": false,
+  "skills": {
+    "weekly-report-generator": {
+      "read_file_called": false,
+      "read_file_lines": [],
+      "read_file_paths": []
+    }
+  },
+  "session_files": [
+    "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_on\\exp_first5_force_skill\\workspace\\sessions\\bench_task_company_weekly_order_risk_on_exp_first5_force_skill.jsonl"
+  ]
+}

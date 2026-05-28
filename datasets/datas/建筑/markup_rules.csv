@@ -1,0 +1,6 @@
+project_type,estimate_type,general_conditions_pct,overhead_pct,profit_pct,design_contingency_pct,construction_contingency_pct,bond_pct,default_escalation_rate
+infrastructure,definitive,0.09,0.05,0.05,0.03,0.03,0.015,0.035
+commercial,detailed,0.1,0.05,0.06,0.05,0.03,0.015,0.038
+renovation,conceptual,0.12,0.05,0.06,0.08,0.05,0.01,0.03
+public_renovation,detailed,0.11,0.05,0.05,0.06,0.04,0.015,0.034
+industrial,detailed,0.1,0.05,0.05,0.04,0.03,0.012,0.033

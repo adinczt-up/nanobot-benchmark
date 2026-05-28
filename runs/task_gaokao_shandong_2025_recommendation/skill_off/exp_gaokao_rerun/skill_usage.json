@@ -1,0 +1,13 @@
+{
+  "skill_mode": "off",
+  "skill_policy": "off",
+  "allowed_skills": [],
+  "description_only_skills": false,
+  "system_prompt_loaded": false,
+  "description_preloaded": false,
+  "description_presented": false,
+  "skills": {},
+  "session_files": [
+    "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_gaokao_shandong_2025_recommendation\\skill_off\\exp_gaokao_rerun\\workspace\\sessions\\bench_task_gaokao_shandong_2025_recommendation_off_exp_gaokao_rerun.jsonl"
+  ]
+}

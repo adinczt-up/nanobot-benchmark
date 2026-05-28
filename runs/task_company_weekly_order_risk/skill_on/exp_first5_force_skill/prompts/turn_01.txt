@@ -1,0 +1,19 @@
+你正在执行一个隔离的 nanobot benchmark 任务。请严格遵守任务说明，直接回答当前轮问题。
+
+全局任务说明：
+任务背景：你是公司经营分析人员，需要基于 datasets/order_status_2005_may.csv 中 2005 年 5 月两周订单状态数据，撰写面向管理层的订单风险周报。核心工作是识别当前周与上一周的销售变化、Disputed/Shipped 等订单状态带来的收入风险、重点客户和产品线暴露。每轮请直接在 response 中回答，不需要生成 Markdown 文件或写入 output。
+
+隔离与工具约束：
+- 只能使用当前 workspace 内的本地文件。
+- 数据文件路径以 workspace 为根目录，例如 datasets/2025年分段表.xls。
+- 禁止联网；不要调用 web_search 或 web_fetch。
+- 禁止安装、创建、修改或保存新的 skill。
+- 本次任务必须继续使用前序已确认的 workspace skill：weekly-report-generator。这些 skill 的完整 SKILL.md 已作为 Active Skills 加载到系统提示词中，本轮仍然可见。如果 skill 内容和本任务说明、本轮问题或本地数据冲突，以本任务说明、本轮问题和本地数据为准。
+- 如果 skill 内容和本任务说明冲突，以本任务说明、本轮问题和本地数据为准。
+
+当前轮次：1
+当前相关数据表：
+- datasets/order_status_2005_may.csv
+
+当前问题：
+为了做环比，请再确认上一周的日期范围，口径要和当前周一致。

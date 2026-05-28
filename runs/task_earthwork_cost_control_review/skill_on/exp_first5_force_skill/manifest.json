@@ -1,0 +1,63 @@
+{
+  "task_id": "task_earthwork_cost_control_review",
+  "skill_mode": "on",
+  "skill_policy": "force-use",
+  "run_id": "exp_first5_force_skill",
+  "created_at": "2026-05-28T12:14:34.078184",
+  "repo_root": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main",
+  "run_root": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill",
+  "workspace": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill\\workspace",
+  "config": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill\\config.json",
+  "allowed_skills": [
+    "afrexai-construction-estimator"
+  ],
+  "task_declared_skills": [
+    "afrexai-construction-estimator"
+  ],
+  "copied_assets": [
+    {
+      "source": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\datasets\\datas\\建筑\\boq_items.csv",
+      "destination": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill\\workspace\\datasets\\boq_items.csv"
+    },
+    {
+      "source": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\datasets\\datas\\建筑\\change_orders.csv",
+      "destination": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill\\workspace\\datasets\\change_orders.csv"
+    },
+    {
+      "source": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\datasets\\datas\\建筑\\markup_rules.csv",
+      "destination": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill\\workspace\\datasets\\markup_rules.csv"
+    },
+    {
+      "source": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\datasets\\datas\\建筑\\monthly_cost_reports.csv",
+      "destination": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill\\workspace\\datasets\\monthly_cost_reports.csv"
+    },
+    {
+      "source": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\datasets\\datas\\建筑\\pricing_workitems_subset.csv",
+      "destination": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill\\workspace\\datasets\\pricing_workitems_subset.csv"
+    },
+    {
+      "source": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\datasets\\datas\\建筑\\project_briefs.csv",
+      "destination": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill\\workspace\\datasets\\project_briefs.csv"
+    },
+    {
+      "source": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\datasets\\datas\\建筑\\rate_summary.csv",
+      "destination": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill\\workspace\\datasets\\rate_summary.csv"
+    },
+    {
+      "source": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\datasets\\datas\\建筑\\selection_manifest.json",
+      "destination": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill\\workspace\\datasets\\selection_manifest.json"
+    },
+    {
+      "source": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\datasets\\datas\\建筑\\subcontractor_quotes.csv",
+      "destination": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill\\workspace\\datasets\\subcontractor_quotes.csv"
+    }
+  ],
+  "copied_skills": [
+    {
+      "source": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\datasets\\skills\\afrexai-construction-estimator",
+      "destination": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_earthwork_cost_control_review\\skill_on\\exp_first5_force_skill\\workspace\\skills\\afrexai-construction-estimator",
+      "description_only": "false",
+      "system_prompt_loaded": "true"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "task_id": "task_company_weekly_order_risk",
+  "skill_mode": "off",
+  "run_id": "exp_first5_force_skill",
+  "status": "completed",
+  "final_output_md": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\final_output.md",
+  "final_output_json": null,
+  "final_output_parseable_json": false,
+  "final_output": "基于前两轮的完整数据分析，以下是周报摘要中应重点点名的风险关键词与业务实体：\n\n---\n\n**🔴 状态风险关键词**\n\n| 关键词 | 依据 |\n|---|---|\n| **In Process 70.9%** | 当前周超七成收入未确认发货，远高于正常水平 |\n| **Disputed 遗留 46,200** | 上周争议款尚未转正，回收存疑 |\n| **On Hold 遗留 48,317** | 上周暂停款未解除，合计风险敞口 94,517 |\n| **Shipped 骤降 62.6%** | 确认收入从 159,139 跌至 59,475，仅 1 笔订单发货 |\n\n---\n\n**🔴 客户风险实体**\n\n| 实体 | 风险要点 |\n|---|---|\n| **Euro Shopping Channel** | 跨周最大风险客户——上周 Disputed 31,822 + 本周 In Process 35,133，累计风险近 67,000；且本周销售额环比 -58.2% |\n| **Gifts4AllAges.com** | 上周 On Hold 48,317，本周零订单，历史风险未解除、客户可能流失 |\n| **Australian Collectables, Ltd** | 上周 Disputed 14,378，本周零订单，争议款未回收 |\n\n---\n\n**🔴 产品线风险实体**\n\n| 实体 | 风险要点 |\n|---|---|\n| **Classic Cars** | 当前周占比 57.4%（117,236），集中度过高且 70%+ 仍 In Process |\n| **Motorcycles / Planes / Ships / Trains** | 四条产品线本周零订单，完全断档 |\n\n---\n\n**🔴 国家风险实体**\n\n| 实体 | 风险要点 |\n|---|---|\n| **USA** | 上周 79,965 → 本周 13,429，环比 -83.2%，最大市场急剧萎缩 |\n| **Spain** | 上周 84,110 → 本周 35,133，环比 -58.2%，且 Euro Shopping Channel 争议未解 |\n| **Austria / France / Australia** | 本周新增大额订单但全部 In Process，收入确认依赖后续履约 |\n\n---\n\n**🔴 结构性风险关键词**\n\n| 关键词 | 依据 |\n|---|---|\n| **销售额环比 -19.5%** | 整体收入收缩近两成 |\n| **产品线断档** | 7 条产品线仅 3 条有订单，业务覆盖面骤缩 |\n| **客户集中度** | 当前周仅 7 个客户，前 3 名占 72%，任一客户违约即重创当周收入 |\n| **跨周风险累积** | 上周 Disputed/On Hold 94,517 未消化 + 本周 In Process 144,730 未确认，合计 **239,247** 处于非 Shipped 状态 |\n\n---\n\n**一句话摘要供管理层速览：**\n\n> 本周销售额环比 -19.5%，Shipped 确认收入骤降 62.6%；当前周 70.9% 收入仍处 In Process，叠加上周遗留 Disputed/On Hold 94,517，合计 239,247 处于风险状态；Euro Shopping Channel 跨周争议+在途近 67,000 为最大客户风险点；4 条产品线零订单、美国市场 -83.2%，业务面严重收缩。",
+  "skill_policy": "off",
+  "skill_usage_json": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\skill_usage.json",
+  "skill_usage": {
+    "skill_mode": "off",
+    "skill_policy": "off",
+    "allowed_skills": [],
+    "description_only_skills": false,
+    "system_prompt_loaded": false,
+    "description_preloaded": false,
+    "description_presented": false,
+    "skills": {},
+    "session_files": [
+      "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\workspace\\sessions\\bench_task_company_weekly_order_risk_off_exp_first5_force_skill.jsonl"
+    ]
+  },
+  "turns": [
+    {
+      "idx": 0,
+      "prompt_path": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\prompts\\turn_00.txt",
+      "response_path": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\outputs\\turn_00.response.md",
+      "returncode": 0,
+      "content": "根据对 `order_status_2005_may.csv` 的数据分析，本周口径界定如下：\n\n---\n\n**当前周（本周）日期范围：2005年5月17日 – 5月31日**\n\n该口径的确定依据：\n\n1. **数据来源**：从 `order_status_2005_may.csv` 中筛选 `YEAR_ID=2005` 且 `MONTH_ID=5` 的记录，共 120 条订单行。按订单日期自然分布，数据明显分为两段：\n   - **前段（对比周/上一周）**：5月1日–5月13日，共 65 条订单，状态以 Shipped（40）、On Hold（14）、Disputed（11）为主；\n   - **后段（当前周）**：5月17日–5月31日，共 55 条订单，状态以 In Process（41）、Shipped（14）为主。\n\n2. **分段逻辑**：5月14–16日无订单记录，形成天然断点；5月17日起新一批订单开始录入，至月末共覆盖 5 个交易日（5/17、5/29、5/30、5/31 等），构成当前周口径。\n\n3. **口径定义**：以 5月17日为起点、5月31日为终点的后段数据作为\"本周\"，与前段（5月1日–13日）形成周环比对比基础，用于识别销售变化与订单状态风险。",
+      "system_prompt_path": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\system_prompts\\turn_00.system.md"
+    },
+    {
+      "idx": 1,
+      "prompt_path": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\prompts\\turn_01.txt",
+      "response_path": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\outputs\\turn_01.response.md",
+      "returncode": 0,
+      "content": "**上一周日期范围：2005年5月1日 – 5月13日**\n\n口径一致性说明：\n\n两周的划分依据同一规则——**以数据中订单日期的自然断点为界**。5月14–16日（周六至周一）在数据集中无任何订单记录，形成天然分隔线，据此将5月数据一分为二：\n\n| | 上一周 | 当前周 |\n|---|---|---|\n| **日期范围** | 5月1日 – 5月13日 | 5月17日 – 5月31日 |\n| **订单行数** | 65 | 55 |\n| **销售额** | 253,656 | 204,205 |\n| **交易日数** | 7（5/1、5/3、5/5、5/6、5/9、5/10、5/13） | 4（5/17、5/29、5/30、5/31） |\n| **订单状态** | Shipped 40、On Hold 14、Disputed 11 | In Process 41、Shipped 14 |\n\n口径定义逻辑：从数据集 `order_status_2005_may.csv` 中取 `YEAR_ID=2005 & MONTH_ID=5` 的全部 120 条记录，以 5月14–16日无订单空档为分界，空档前的连续订单区间为上一周，空档后至月末为当前周。两端均包含各自区间内的所有交易日，不截断、不重叠。",
+      "system_prompt_path": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\system_prompts\\turn_01.system.md"
+    },
+    {
+      "idx": 2,
+      "prompt_path": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\prompts\\turn_02.txt",
+      "response_path": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\outputs\\turn_02.response.md",
+      "returncode": 0,
+      "content": "以下是本周订单风险看板的完整数据：\n\n---\n\n## 一、销售总额环比\n\n| 指标 | 上一周（5/1–5/13） | 当前周（5/17–5/31） | 环比变化 |\n|---|---|---|---|\n| **销售额** | 253,656 | 204,205 | **-19.5%** |\n| **订单行数** | 65 | 55 | -15.4% |\n| **订单数** | 7 | 7 | 持平 |\n| **单均金额（AOV）** | 36,237 | 29,172 | -19.5% |\n\n销售额环比下降近两成，订单数虽持平但单均金额显著缩水。\n\n---\n\n## 二、订单状态风险金额\n\n| 状态 | 上一周金额 | 占比 | 当前周金额 | 占比 |\n|---|---|---|---|---|\n| **Shipped（已发货）** | 159,139 | 62.7% | 59,475 | 29.1% |\n| **Disputed（争议）** | 46,200 | 18.2% | 0 | 0% |\n| **On Hold（暂停）** | 48,317 | 19.1% | 0 | 0% |\n| **In Process（处理中）** | 0 | 0% | 144,730 | 70.9% |\n\n**核心风险信号：**\n- **上一周风险敞口**：Disputed + On Hold = **94,517**，占上周总销售额的 **37.3%**，近四成收入存在回收风险。\n- **当前周风险敞口**：In Process 占比高达 **70.9%**（144,730），仅 29.1% 已确认发货，大量收入尚未落袋。\n- **Shipped 金额骤降**：从 159,139 跌至 59,475（-62.6%），确认收入大幅收缩。\n\n---\n\n## 三、Disputed / On Hold 明细（上一周）\n\n| 风险类型 | 客户 | 订单号 | 金额 | 涉及产品线 |\n|---|---|---|---|---|\n| Disputed | **Euro Shopping Channel** | 10417 | 31,822 | Motorcycles、Vintage Cars、Planes |\n| Disputed | **Australian Collectables, Ltd** | 10415 | 14,378 | Motorcycles、Ships、Planes、Vintage Cars |\n| On Hold | **Gifts4AllAges.com** | 10414 | 48,317 | Ships、Vintage Cars、Classic Cars、Trains |\n\n---\n\n## 四、产品线暴露\n\n| 产品线 | 上一周 | 当前周 | 环比 |\n|---|---|---|---|\n| **Classic Cars** | 67,149 | **117,236** | **+74.6%** ⬆ |\n| **Vintage Cars** | 29,151 | **43,943** | **+50.7%** ⬆ |\n| Trucks and Buses | 46,700 | 43,026 | -7.9% |\n| Motorcycles | 39,390 | 0 | **-100%** ⬇ |\n| Planes | 34,273 | 0 | **-100%** ⬇ |\n| Ships | 26,735 | 0 | **-100%** ⬇ |\n| Trains | 10,258 | 0 | **-100%** ⬇ |\n\n**突出风险**：当前周订单高度集中于 Classic Cars（57.4%）和 Vintage Cars（21.5%），仅 3 条产品线有订单，4 条产品线（Motorcycles、Planes、Ships、Trains）完全断档。Classic Cars 虽大幅增长，但其中 70.9% 仍处于 In Process 状态，收入确认存在不确定性。\n\n---\n\n## 五、国家暴露\n\n| 国家 | 上一周 | 当前周 | 环比 |\n|---|---|---|---|\n| **Austria** | 0 | **59,475** | 新增 |\n| **Australia** | 14,378 | **43,971** | **+205.8%** ⬆ |\n| **France** | 0 | **43,785** | 新增 |\n| Spain | 84,110 | 35,133 | -58.2% |\n| USA | 79,965 | 13,429 | **-83.2%** ⬇ |\n| Belgium | 0 | 8,412 | 新增 |\n| Canada | 33,693 | 0 | -100% |\n| Italy | 41,510 | 0 | -100% |\n\n**突出风险**：美国（-83.2%）和西班牙（-58.2%）大幅萎缩；奥地利、法国、比利时为新增市场但尚未有发货确认。当前周仅奥地利有 Shipped 订单（Salzburg Collectables，59,475），其余国家全部为 In Process。\n\n---\n\n## 六、客户暴露\n\n| 客户 | 上一周 | 当前周 | 环比 | 风险标注 |\n|---|---|---|---|---|\n| **Salzburg Collectables** | 0 | 59,475 | 新增 | 唯一已发货客户（Classic Cars） |\n| **Souveniers And Things Co.** | 0 | 43,971 | 新增 | 全部 In Process |\n| **La Rochelle Gifts** | 0 | 43,785 | 新增 | 全部 In Process |\n| **Euro Shopping Channel** | 84,110 | 35,133 | -58.2% | ⚠️ 上周 Disputed 31,822；本周 In Process 35,133 |\n| **Petit Auto** | 0 | 8,412 | 新增 | 全部 In Process |\n| **Mini Gifts Distributors Ltd.** | 0 | 7,262 | 新增 | 全部 In Process |\n| **Diecast Classics Inc.** | 0 | 6,167 | 新增 | 全部 In Process |\n\n**最突出的客户风险**：\n1. **Euro Shopping Channel**：连续两周出现风险——上周 31,822 处于 Disputed，本周 35,133 全部 In Process，累计风险敞口最大。\n2. **Gifts4AllAges.com**：上周 48,317 On Hold，本周无新订单，历史风险未解除。\n3. **Australian Collectables, Ltd**：上周 14,378 Disputed，本周无新订单，争议款未回收。\n\n---\n\n## 七、看板总结\n\n- **销售额环比 -19.5%**，确认收入（Shipped）更骤降 62.6%\n- **当前周 70.9% 收入处于 In Process**，仅 1 个客户、1 个国家完成发货\n- **上周遗留 Disputed + On Hold 共 94,517**，占上周收入 37.3%，尚未转正\n- **产品线集中度极高**：Classic Cars 一条线占 57.4%，4 条产品线零订单\n- **Euro Shopping Channel 为最大风险客户**：跨周累计争议+在途金额近 67,000",
+      "system_prompt_path": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\system_prompts\\turn_02.system.md"
+    },
+    {
+      "idx": 3,
+      "prompt_path": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\prompts\\turn_03.txt",
+      "response_path": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\outputs\\turn_03.response.md",
+      "returncode": 0,
+      "content": "基于前两轮的完整数据分析，以下是周报摘要中应重点点名的风险关键词与业务实体：\n\n---\n\n**🔴 状态风险关键词**\n\n| 关键词 | 依据 |\n|---|---|\n| **In Process 70.9%** | 当前周超七成收入未确认发货，远高于正常水平 |\n| **Disputed 遗留 46,200** | 上周争议款尚未转正，回收存疑 |\n| **On Hold 遗留 48,317** | 上周暂停款未解除，合计风险敞口 94,517 |\n| **Shipped 骤降 62.6%** | 确认收入从 159,139 跌至 59,475，仅 1 笔订单发货 |\n\n---\n\n**🔴 客户风险实体**\n\n| 实体 | 风险要点 |\n|---|---|\n| **Euro Shopping Channel** | 跨周最大风险客户——上周 Disputed 31,822 + 本周 In Process 35,133，累计风险近 67,000；且本周销售额环比 -58.2% |\n| **Gifts4AllAges.com** | 上周 On Hold 48,317，本周零订单，历史风险未解除、客户可能流失 |\n| **Australian Collectables, Ltd** | 上周 Disputed 14,378，本周零订单，争议款未回收 |\n\n---\n\n**🔴 产品线风险实体**\n\n| 实体 | 风险要点 |\n|---|---|\n| **Classic Cars** | 当前周占比 57.4%（117,236），集中度过高且 70%+ 仍 In Process |\n| **Motorcycles / Planes / Ships / Trains** | 四条产品线本周零订单，完全断档 |\n\n---\n\n**🔴 国家风险实体**\n\n| 实体 | 风险要点 |\n|---|---|\n| **USA** | 上周 79,965 → 本周 13,429，环比 -83.2%，最大市场急剧萎缩 |\n| **Spain** | 上周 84,110 → 本周 35,133，环比 -58.2%，且 Euro Shopping Channel 争议未解 |\n| **Austria / France / Australia** | 本周新增大额订单但全部 In Process，收入确认依赖后续履约 |\n\n---\n\n**🔴 结构性风险关键词**\n\n| 关键词 | 依据 |\n|---|---|\n| **销售额环比 -19.5%** | 整体收入收缩近两成 |\n| **产品线断档** | 7 条产品线仅 3 条有订单，业务覆盖面骤缩 |\n| **客户集中度** | 当前周仅 7 个客户，前 3 名占 72%，任一客户违约即重创当周收入 |\n| **跨周风险累积** | 上周 Disputed/On Hold 94,517 未消化 + 本周 In Process 144,730 未确认，合计 **239,247** 处于非 Shipped 状态 |\n\n---\n\n**一句话摘要供管理层速览：**\n\n> 本周销售额环比 -19.5%，Shipped 确认收入骤降 62.6%；当前周 70.9% 收入仍处 In Process，叠加上周遗留 Disputed/On Hold 94,517，合计 239,247 处于风险状态；Euro Shopping Channel 跨周争议+在途近 67,000 为最大客户风险点；4 条产品线零订单、美国市场 -83.2%，业务面严重收缩。",
+      "system_prompt_path": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill\\system_prompts\\turn_03.system.md"
+    }
+  ]
+}

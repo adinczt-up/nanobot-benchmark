@@ -1,0 +1,27 @@
+你正在执行一个隔离的 nanobot benchmark 任务。请严格遵守任务说明，直接回答当前轮问题。
+
+全局任务说明：
+任务背景：你是建筑项目成本控制分析人员，需要围绕 PRJ-003 读取项目简介、分包商报价、变更单和月度成本报告，完成分包商选择、低价报价风险识别、已批准变更单提取和最新 EVM 成本状态复盘。
+
+隔离与工具约束：
+- 只能使用当前 workspace 内的本地文件。
+- 数据文件路径以 workspace 为根目录，例如 datasets/2025年分段表.xls。
+- 禁止联网；不要调用 web_search 或 web_fetch。
+- 禁止安装、创建、修改或保存新的 skill。
+- 本次 run 禁止使用任何 skill；请不要读取 workspace/skills 下的内容。
+- 如果 skill 内容和本任务说明冲突，以本任务说明、本轮问题和本地数据为准。
+
+当前轮次：0
+当前相关数据表：
+- datasets/boq_items.csv
+- datasets/change_orders.csv
+- datasets/markup_rules.csv
+- datasets/monthly_cost_reports.csv
+- datasets/pricing_workitems_subset.csv
+- datasets/project_briefs.csv
+- datasets/rate_summary.csv
+- datasets/selection_manifest.json
+- datasets/subcontractor_quotes.csv
+
+当前问题：
+开始做成本复盘前，先确认这次分析锁定的是哪个项目，并说明你是从哪些项目资料里定位到的。

@@ -1,0 +1,25 @@
+project_id,boq_id,division,rate_code,description,quantity,unit,waste_factor,adjusted_quantity,unit_cost,extended_cost,pricing_basis,notes
+PRJ-001,BOQ-001,31 00 00,KAME_KAME_KAKADX_KADX,3,0.80,1000立方米,0.05,0.84,6571.85,5520.35,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-001,BOQ-002,31 00 00,KAME_KAME_KAKADX_KALI,1,0.92,1000立方米,0.05,0.97,3990.05,3854.39,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-001,BOQ-003,31 00 00,KAME_KAME_KAKADX_KAME建筑工,1,1.04,1000立方米,0.05,1.09,2892.11,3158.19,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-001,BOQ-004,31 00 00,KAME_KAME_KAKADX_KANE,6,1.16,1000立方米,0.05,1.22,8453.87,10296.81,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-002,BOQ-005,31 00 00,KAME_KAME_KAKADX_KAPU建筑工,4,0.80,1000立方米,0.05,0.84,5561.75,4671.87,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-002,BOQ-006,31 00 00,KAME_KAME_KAKADX_KARI建筑工,2,0.92,1000立方米,0.05,0.97,3337.05,3223.59,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-002,BOQ-007,31 00 00,KAME_KAME_KAKADX_KASA建筑工,5,1.04,1000立方米,0.05,1.09,7119.05,7774.00,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-002,BOQ-008,31 00 00,KAME_KAME_KAKADX_KATO建筑工,3,1.16,1000立方米,0.05,1.22,4449.40,5419.37,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-003,BOQ-009,31 00 00,KAME_KAME_KAKADX_KAVO,2,0.80,1000立方米,0.05,0.84,5560.25,4670.61,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-003,BOQ-010,31 00 00,KAME_KAME_KAKADX_MEDX,1,0.92,1000立方米,0.05,0.97,4156.35,4015.03,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-003,BOQ-011,31 00 00,KAME_KAME_KAKADX_MEKA,4,1.04,1000立方米,0.05,1.09,7745.39,8457.97,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-003,BOQ-012,31 00 00,KAME_KAME_KAKADX_MELI,5,1.16,1000立方米,0.05,1.22,9893.17,12049.88,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-004,BOQ-013,31 00 00,KAME_KAME_KAKADX_MEME,5,0.80,1000立方米,0.05,0.84,9975.12,8379.10,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-004,BOQ-014,31 00 00,KAME_KAME_KAKADX_MENE,4,0.92,1000立方米,0.05,0.97,7674.14,7413.22,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-004,BOQ-015,31 00 00,KAME_KAME_KAKADX_MEPU,2,1.04,1000立方米,0.05,1.09,4715.44,5149.26,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-004,BOQ-016,31 00 00,KAME_KAME_KAKADX_MERI,6,1.16,1000立方米,0.05,1.22,12087.50,14722.58,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-005,BOQ-017,31 00 00,KAME_KAME_KAKADX_MESA,3,0.80,1000立方米,0.05,0.84,6194.79,5203.62,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-005,BOQ-018,31 00 00,KAME_KAME_KAKADX_METO,1,0.92,1000立方米,0.05,0.97,3883.30,3751.27,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-005,BOQ-019,31 00 00,KAME_KAME_KAKADX_MEVO,6,1.04,1000立方米,0.05,1.09,11927.28,13024.59,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-005,BOQ-020,31 00 00,KAME_KAME_KAKADX_RIKA,2,1.16,1000立方米,0.05,1.22,5444.82,6631.79,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-006,BOQ-021,31 00 00,KAME_KAME_KAKADX_RIME,3,0.80,1000立方米,0.05,0.84,7398.30,6214.57,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-006,BOQ-022,31 00 00,KAME_KAME_KAKADX_RIPU,3,0.92,1000立方米,0.05,0.97,8410.06,8124.12,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-006,BOQ-023,31 00 00,KAME_KAME_KAKADX_RIRI,1,1.04,1000立方米,0.05,1.09,4647.91,5075.52,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.
+PRJ-006,BOQ-024,31 00 00,KAME_KAME_KAKADX_RITO,2,1.16,1000立方米,0.05,1.22,5975.88,7278.62,rate_summary.total_cost_per_position,General Trade work item from Shanghai pricing subset.

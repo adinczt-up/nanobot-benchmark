@@ -1,0 +1,7 @@
+project_id,co_id,description,reason_type,related_rate_code,quantity_delta,unit,direct_cost,markup_pct,total_cost,schedule_impact_days,status
+PRJ-001,CO-001,针对 3 的设计优化与现场调整。,owner-directed,KAME_KAME_KAKADX_KADX,0.14,1000立方米,946.35,0.15,1088.30,3,approved
+PRJ-002,CO-002,针对 4 的设计优化与现场调整。,scope-clarification,KAME_KAME_KAKADX_KAPU建筑工,0.14,1000立方米,800.89,0.15,921.03,1,pending
+PRJ-003,CO-003,针对 2 的设计优化与现场调整。,owner-directed,KAME_KAME_KAKADX_KAVO,0.14,1000立方米,800.68,0.15,920.78,2,approved
+PRJ-004,CO-004,针对 5 的设计优化与现场调整。,scope-clarification,KAME_KAME_KAKADX_MEME,0.14,1000立方米,1436.42,0.15,1651.88,3,pending
+PRJ-005,CO-005,针对 3 的设计优化与现场调整。,owner-directed,KAME_KAME_KAKADX_MESA,0.14,1000立方米,892.05,0.15,1025.86,1,approved
+PRJ-006,CO-006,针对 3 的设计优化与现场调整。,scope-clarification,KAME_KAME_KAKADX_RIME,0.14,1000立方米,1065.36,0.15,1225.16,2,pending

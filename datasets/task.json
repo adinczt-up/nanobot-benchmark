@@ -1,0 +1,3568 @@
+[
+  {
+    "task_id": "task_gaokao_shandong_2025_recommendation",
+    "source": "skill_benchmark",
+    "difficulty": "medium",
+    "instruction": "你正在为一位 2025 年山东考生生成结构化志愿建议。考生分数为 580 分。只能使用运行环境 datasets/ 下的本地数据文件，不需要联网；请在每轮对话中直接回答问题。最终目标是根据一分一段表换算位次，并基于普通类常规批第 1 次志愿投档情况表，按冲/稳/保三档给出可落地的院校专业推荐。",
+    "data_assets": [
+      {
+        "path": "datas/高考分数/2025年分段表.xls",
+        "type": "xls",
+        "env_path": "datasets/2025年分段表.xls"
+      },
+      {
+        "path": "datas/高考分数/山东省2025年普通类常规批第1次志愿投档情况表.xls",
+        "type": "xls",
+        "env_path": "datasets/山东省2025年普通类常规批第1次志愿投档情况表.xls"
+      }
+    ],
+    "skills": [
+      "gaokao-advisor"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "先帮这位山东考生把 580 分换算成 2025 年一分一段表里的累计位次。请说明用到的本地表格依据，并直接给出位次。",
+        "score_points": [
+          "明确考生 province 为山东，year 为 2025，score 为 580。",
+          "使用 datasets/2025年分段表.xls 中 580 分对应的累计位次，而不是自行估算或联网查询。",
+          "estimated_rank 必须为 42645。"
+        ],
+        "related_tables": [
+          "datasets/2025年分段表.xls"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "接下来先定推荐口径：只考虑山东省内院校，院校代码前缀 A4xx 视为省内；专业名称保留法学、汉语言、中国语言文学、新闻传播相关方向，排除地方专项、中外合作、校企合作、定向和艺术类。请说明候选专业筛选、rank_gap=最低位次-考生位次，以及冲/稳/保分档和排序口径。",
+        "score_points": [
+          "筛选数据源必须是 datasets/山东省2025年普通类常规批第1次志愿投档情况表.xls。",
+          "院校代码前缀 A4xx 被视为山东省内院校。",
+          "专业关键词保留条件包含：法学、汉语言、中国语言文学、新闻传播。",
+          "排除条件包含：地方专项、中外合作、校企合作、定向、艺术。",
+          "rank_gap 计算公式为 lowest_rank - estimated_rank，其中 estimated_rank 为 42645。",
+          "rush 分档为 -8000 <= rank_gap < 0；steady 分档为 0 <= rank_gap <= 15000；safe 分档为 rank_gap > 15000。",
+          "排序规则为 abs(rank_gap) 升序，然后 lowest_rank 升序，然后 school 升序，然后 major 升序；每档保留前 3 条。"
+        ],
+        "related_tables": [
+          "datasets/山东省2025年普通类常规批第1次志愿投档情况表.xls"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "按刚才的口径，先给我冲一冲的 3 个院校专业建议。每条请带上学校、专业、计划数、最低位次和与考生位次的差值。",
+        "score_points": [
+          "冲档结果应按规则只保留 3 条，且每条的 rank_gap 都落在 -8000 到 0 之间、不包含 0。",
+          "第一条应为山东科技大学法学，计划数 128，最低位次 42638，与考生位次差 -7。",
+          "第二条应为山东科技大学汉语言文学，计划数 38，最低位次 42564，与考生位次差 -81。",
+          "第三条应为山东师范大学中国语言文学类，计划数 285，最低位次 36442，与考生位次差 -6203。"
+        ],
+        "related_tables": [
+          "datasets/山东省2025年普通类常规批第1次志愿投档情况表.xls"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "再给我稳妥一些的 3 个院校专业建议，同样带学校、专业、计划数、最低位次和位次差。",
+        "score_points": [
+          "稳档结果应按规则只保留 3 条，且每条的 rank_gap 都在 0 到 15000 之间，包含两端。",
+          "第一条应为山东财经大学法学，计划数 223，最低位次 43440，与考生位次差 795。",
+          "第二条应为山东财经大学汉语言文学，计划数 90，最低位次 48037，与考生位次差 5392。",
+          "第三条应为济南大学法学，计划数 136，最低位次 48938，与考生位次差 6293。"
+        ],
+        "related_tables": [
+          "datasets/山东省2025年普通类常规批第1次志愿投档情况表.xls"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "最后补上保底档的 3 个院校专业建议，格式和前两档保持一致。",
+        "score_points": [
+          "保档结果应按规则只保留 3 条，且每条的 rank_gap 都大于 15000。",
+          "第一条应为鲁东大学汉语言文学(师范类)，计划数 117，最低位次 64218，与考生位次差 21573。",
+          "第二条应为鲁东大学法学，计划数 79，最低位次 70061，与考生位次差 27416。",
+          "第三条应为鲁东大学法学(涉外法治方向)，计划数 79，最低位次 74247，与考生位次差 31602。"
+        ],
+        "related_tables": [
+          "datasets/山东省2025年普通类常规批第1次志愿投档情况表.xls"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "请把前面三档整理成一份最终志愿方案，包含考生基本信息、换算位次，以及冲/稳/保各 3 条推荐；直接在回复里给出即可。",
+        "score_points": [
+          "最终结果包含 province=山东、year=2025、score=580、estimated_rank=42645。",
+          "最终结果包含 bands.rush、bands.steady、bands.safe 三个分档。",
+          "rush、steady、safe 三个分档分别保留前 3 项，且字段包含 school、major、plan、lowest_rank、rank_gap。"
+        ],
+        "related_tables": [
+          "datasets/2025年分段表.xls",
+          "datasets/山东省2025年普通类常规批第1次志愿投档情况表.xls"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_company_weekly_order_risk",
+    "source": "skill_benchmark",
+    "difficulty": "medium",
+    "instruction": "任务背景：你是公司经营分析人员，需要基于 datasets/order_status_2005_may.csv 中 2005 年 5 月两周订单状态数据，撰写面向管理层的订单风险周报。核心工作是识别当前周与上一周的销售变化、Disputed/Shipped 等订单状态带来的收入风险、重点客户和产品线暴露。每轮请直接在 response 中回答，不需要生成 Markdown 文件或写入 output。",
+    "data_assets": [
+      {
+        "path": "datas/公司周报撰写/order_status_2005_may.csv",
+        "type": "csv",
+        "env_path": "datasets/order_status_2005_may.csv"
+      }
+    ],
+    "skills": [
+      "weekly-report-generator"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "这份订单风险周报先把本周口径定下来：请说明当前周覆盖的日期范围，并简要说明它来自 order_status_2005_may.csv 的哪段订单数据。",
+        "score_points": [
+          "答案需要说明当前周期为 2005-05-08 至 2005-05-14。"
+        ],
+        "related_tables": [
+          "datasets/order_status_2005_may.csv"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "为了做环比，请再确认上一周的日期范围，口径要和当前周一致。",
+        "score_points": [
+          "答案需要说明上一周期为 2005-05-01 至 2005-05-07。"
+        ],
+        "related_tables": [
+          "datasets/order_status_2005_may.csv"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "请把本周订单风险看板算出来：销售额环比、订单行和订单数、Disputed/Shipped 金额，以及最突出的产品线、国家和客户暴露都要带上。",
+        "score_points": [
+          "本周总销售额需要为 87709.93。",
+          "上一周总销售额需要为 165946.07。",
+          "销售额环比变化率需要为 -47.15。",
+          "本周订单行数需要为 25。",
+          "本周唯一订单数需要为 3。",
+          "Disputed 状态订单行数需要对应 Disputed，数值为 11。",
+          "Disputed 状态销售额需要对应 Disputed，数值为 46199.99。",
+          "Shipped 状态销售额需要对应 Shipped，数值为 41509.94。",
+          "销售额最高产品线需要对应 Motorcycles，数值为 39389.7。",
+          "销售额最高国家需要对应 Italy，数值为 41509.94。",
+          "主要风险客户需要对应 Euro Shopping Channel，数值为 31821.9。",
+          "亚太风险客户需要对应 Australian Collectables，数值为 14378.09。"
+        ],
+        "related_tables": [
+          "datasets/order_status_2005_may.csv"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "最后帮我列一组周报摘要里应该重点点名的风险关键词或业务实体，方便管理层一眼看到问题。",
+        "score_points": [
+          "重点词或实体清单需要包含 Disputed。",
+          "重点词或实体清单需要包含 Euro Shopping Channel。",
+          "重点词或实体清单需要包含 Australian Collectables。",
+          "重点词或实体清单需要包含 Motorcycles。",
+          "重点词或实体清单需要包含 Italy。",
+          "重点词或实体清单需要包含 Spain。"
+        ],
+        "related_tables": [
+          "datasets/order_status_2005_may.csv"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_company_weekly_sales_performance",
+    "source": "skill_benchmark",
+    "difficulty": "medium",
+    "instruction": "任务背景：你是销售运营分析人员，需要基于 datasets/weekly_sales_2023_oct.csv 中两周销售交易切片，撰写管理层可读的销售表现周报。核心工作是比较当前周和上一周的销售额、订单行、客单表现、产品线/国家/客户等驱动因素，并形成可落地的业务摘要。",
+    "data_assets": [
+      {
+        "path": "datas/公司周报撰写/weekly_sales_2023_oct.csv",
+        "type": "csv",
+        "env_path": "datasets/weekly_sales_2023_oct.csv"
+      }
+    ],
+    "skills": [
+      "weekly-report-generator"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "先确认这份销售周报的本周时间窗，直接给出当前周起止日期。",
+        "score_points": [
+          "答案需要说明当前周期为 2023-10-15 至 2023-10-21。"
+        ],
+        "related_tables": [
+          "datasets/weekly_sales_2023_oct.csv"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "再把对照用的上一周时间窗说清楚，后续所有环比都按这个口径来。",
+        "score_points": [
+          "答案需要说明上一周期为 2023-10-08 至 2023-10-14。"
+        ],
+        "related_tables": [
+          "datasets/weekly_sales_2023_oct.csv"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "请汇总本周销售表现的核心指标：总销售额、环比变化、订单行、销量、平均折扣，以及领先的销售代表、区域、品类、渠道和客户类型。",
+        "score_points": [
+          "本周总销售额需要为 169593.16。",
+          "上一周总销售额需要为 100522.33。",
+          "销售额环比变化率需要为 68.71。",
+          "本周订单行数需要为 30。",
+          "本周销量需要为 879。",
+          "本周平均折扣率需要为 14.07。",
+          "销售额最高销售代表需要对应 David，数值为 80190.91。",
+          "销售额最高区域需要对应 North，数值为 62213.15。",
+          "销售额最高品类需要对应 Clothing，数值为 57726.17。",
+          "Retail 渠道销售额需要对应 Retail，数值为 112731.84。",
+          "Returning 客户销售额需要对应 Returning，数值为 106867.76。"
+        ],
+        "related_tables": [
+          "datasets/weekly_sales_2023_oct.csv"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "请列出写管理层摘要时最该出现的关键词或业务标签，突出本周增长的主要驱动。",
+        "score_points": [
+          "重点词或实体清单需要包含 David。",
+          "重点词或实体清单需要包含 North。",
+          "重点词或实体清单需要包含 Clothing。",
+          "重点词或实体清单需要包含 Retail。",
+          "重点词或实体清单需要包含 Returning。"
+        ],
+        "related_tables": [
+          "datasets/weekly_sales_2023_oct.csv"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_earthwork_cost_control_review",
+    "source": "skill_benchmark",
+    "difficulty": "hard",
+    "instruction": "任务背景：你是建筑项目成本控制分析人员，需要围绕 PRJ-003 读取项目简介、分包商报价、变更单和月度成本报告，完成分包商选择、低价报价风险识别、已批准变更单提取和最新 EVM 成本状态复盘。",
+    "data_assets": [
+      {
+        "path": "datas/建筑/boq_items.csv",
+        "type": "csv",
+        "env_path": "datasets/boq_items.csv"
+      },
+      {
+        "path": "datas/建筑/change_orders.csv",
+        "type": "csv",
+        "env_path": "datasets/change_orders.csv"
+      },
+      {
+        "path": "datas/建筑/markup_rules.csv",
+        "type": "csv",
+        "env_path": "datasets/markup_rules.csv"
+      },
+      {
+        "path": "datas/建筑/monthly_cost_reports.csv",
+        "type": "csv",
+        "env_path": "datasets/monthly_cost_reports.csv"
+      },
+      {
+        "path": "datas/建筑/pricing_workitems_subset.csv",
+        "type": "csv",
+        "env_path": "datasets/pricing_workitems_subset.csv"
+      },
+      {
+        "path": "datas/建筑/project_briefs.csv",
+        "type": "csv",
+        "env_path": "datasets/project_briefs.csv"
+      },
+      {
+        "path": "datas/建筑/rate_summary.csv",
+        "type": "csv",
+        "env_path": "datasets/rate_summary.csv"
+      },
+      {
+        "path": "datas/建筑/selection_manifest.json",
+        "type": "json",
+        "env_path": "datasets/selection_manifest.json"
+      },
+      {
+        "path": "datas/建筑/subcontractor_quotes.csv",
+        "type": "csv",
+        "env_path": "datasets/subcontractor_quotes.csv"
+      }
+    ],
+    "skills": [
+      "afrexai-construction-estimator"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "开始做成本复盘前，先确认这次分析锁定的是哪个项目，并说明你是从哪些项目资料里定位到的。",
+        "score_points": [
+          "答案需要明确项目编号为 PRJ-003。"
+        ],
+        "related_tables": [
+          "datasets/boq_items.csv",
+          "datasets/change_orders.csv",
+          "datasets/markup_rules.csv",
+          "datasets/monthly_cost_reports.csv",
+          "datasets/pricing_workitems_subset.csv",
+          "datasets/project_briefs.csv",
+          "datasets/rate_summary.csv",
+          "datasets/selection_manifest.json",
+          "datasets/subcontractor_quotes.csv"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "请在该项目的分包报价里选出更适合推荐的报价，并用报价、资质或风险信息解释推荐理由。",
+        "score_points": [
+          "推荐报价编号应为 Q-007。"
+        ],
+        "related_tables": [
+          "datasets/boq_items.csv",
+          "datasets/change_orders.csv",
+          "datasets/markup_rules.csv",
+          "datasets/monthly_cost_reports.csv",
+          "datasets/pricing_workitems_subset.csv",
+          "datasets/project_briefs.csv",
+          "datasets/rate_summary.csv",
+          "datasets/selection_manifest.json",
+          "datasets/subcontractor_quotes.csv"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "报价里最低的那一个也请单独挑出来，说明它为什么不能简单按低价中标处理。",
+        "score_points": [
+          "被拒绝的低价报价编号应为 Q-009。"
+        ],
+        "related_tables": [
+          "datasets/boq_items.csv",
+          "datasets/change_orders.csv",
+          "datasets/markup_rules.csv",
+          "datasets/monthly_cost_reports.csv",
+          "datasets/pricing_workitems_subset.csv",
+          "datasets/project_briefs.csv",
+          "datasets/rate_summary.csv",
+          "datasets/selection_manifest.json",
+          "datasets/subcontractor_quotes.csv"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "把分包选择时必须盯住的风险点整理出来，重点看范围缺口、履约能力、保险和报价有效期。",
+        "score_points": [
+          "报价风险说明需要覆盖 scope gap。",
+          "报价风险说明需要覆盖 bondable。",
+          "报价风险说明需要覆盖 insurance。",
+          "报价风险说明需要覆盖 valid_days。"
+        ],
+        "related_tables": [
+          "datasets/boq_items.csv",
+          "datasets/change_orders.csv",
+          "datasets/markup_rules.csv",
+          "datasets/monthly_cost_reports.csv",
+          "datasets/pricing_workitems_subset.csv",
+          "datasets/project_briefs.csv",
+          "datasets/rate_summary.csv",
+          "datasets/selection_manifest.json",
+          "datasets/subcontractor_quotes.csv"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "请找出这个项目已批准的变更单，给出编号、直接成本、含附加项后的总成本和工期影响。",
+        "score_points": [
+          "已批准变更单需要说明：变更单编号为 CO-003，直接成本为 800.68，总成本为 920.78，工期影响天数为 2，状态为 approved。"
+        ],
+        "related_tables": [
+          "datasets/boq_items.csv",
+          "datasets/change_orders.csv",
+          "datasets/markup_rules.csv",
+          "datasets/monthly_cost_reports.csv",
+          "datasets/pricing_workitems_subset.csv",
+          "datasets/project_briefs.csv",
+          "datasets/rate_summary.csv",
+          "datasets/selection_manifest.json",
+          "datasets/subcontractor_quotes.csv"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "用最新一期月度成本报告做个 EVM 小复盘，包含 SPI、CPI、完工估算和当前状态判断。",
+        "score_points": [
+          "最新月度复盘需要说明：期间为 2026-06，SPI为 0.949，CPI为 0.937，完工估算为 40252.18，成本差异为 -2547.61，状态为 over_budget_and_behind。"
+        ],
+        "related_tables": [
+          "datasets/boq_items.csv",
+          "datasets/change_orders.csv",
+          "datasets/markup_rules.csv",
+          "datasets/monthly_cost_reports.csv",
+          "datasets/pricing_workitems_subset.csv",
+          "datasets/project_briefs.csv",
+          "datasets/rate_summary.csv",
+          "datasets/selection_manifest.json",
+          "datasets/subcontractor_quotes.csv"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_earthwork_rate_breakdown",
+    "source": "skill_benchmark",
+    "difficulty": "easy",
+    "instruction": "任务背景：你是土方工程单价分析人员，需要从 rate_summary.csv 和 pricing_workitems_subset.csv 中抽取指定土方 rate code 的单位成本构成，识别每个 rate code 的最高成本资源项，并判断总单位成本最高的 rate code。每轮请直接返回结构化答案，不需要写入 output。",
+    "data_assets": [
+      {
+        "path": "datas/建筑/boq_items.csv",
+        "type": "csv",
+        "env_path": "datasets/boq_items.csv"
+      },
+      {
+        "path": "datas/建筑/change_orders.csv",
+        "type": "csv",
+        "env_path": "datasets/change_orders.csv"
+      },
+      {
+        "path": "datas/建筑/markup_rules.csv",
+        "type": "csv",
+        "env_path": "datasets/markup_rules.csv"
+      },
+      {
+        "path": "datas/建筑/monthly_cost_reports.csv",
+        "type": "csv",
+        "env_path": "datasets/monthly_cost_reports.csv"
+      },
+      {
+        "path": "datas/建筑/pricing_workitems_subset.csv",
+        "type": "csv",
+        "env_path": "datasets/pricing_workitems_subset.csv"
+      },
+      {
+        "path": "datas/建筑/project_briefs.csv",
+        "type": "csv",
+        "env_path": "datasets/project_briefs.csv"
+      },
+      {
+        "path": "datas/建筑/rate_summary.csv",
+        "type": "csv",
+        "env_path": "datasets/rate_summary.csv"
+      },
+      {
+        "path": "datas/建筑/selection_manifest.json",
+        "type": "json",
+        "env_path": "datasets/selection_manifest.json"
+      },
+      {
+        "path": "datas/建筑/subcontractor_quotes.csv",
+        "type": "csv",
+        "env_path": "datasets/subcontractor_quotes.csv"
+      }
+    ],
+    "skills": [
+      "afrexai-construction-estimator"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "请把本任务涉及的土方费率拆成一张可读清单，说明每个 rate code 的名称、单位、人工、设备、材料和合计单价。",
+        "score_points": [
+          "费率清单中需要包含第 1 个结果：费率代码为 KAME_KAME_KAKAME_KAME建筑工，费率名称为 15立方米，土壤组1，单位为 1000立方米，单位总成本为 25337.46，资源行数为 9，最高资源成本为 24941.14。",
+          "费率清单中需要包含第 2 个结果：费率代码为 KAME_KAME_KAKAME_KARI建筑工，费率名称为 15立方米，土质组2，单位为 1000立方米，单位总成本为 30562.67，资源行数为 9，最高资源成本为 30085.25。",
+          "费率清单中需要包含第 3 个结果：费率代码为 KAME_KAME_KAKAME_KATO建筑工，费率名称为 15立方米，土壤组3，单位为 1000立方米，单位总成本为 37215.08，资源行数为 9，最高资源成本为 36632.3。"
+        ],
+        "related_tables": [
+          "datasets/boq_items.csv",
+          "datasets/change_orders.csv",
+          "datasets/markup_rules.csv",
+          "datasets/monthly_cost_reports.csv",
+          "datasets/pricing_workitems_subset.csv",
+          "datasets/project_briefs.csv",
+          "datasets/rate_summary.csv",
+          "datasets/selection_manifest.json",
+          "datasets/subcontractor_quotes.csv"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "在这些土方费率里，哪个 rate code 的合计单价最高？请给出代码并说明比较依据。",
+        "score_points": [
+          "最高单价费率代码需要为 KAME_KAME_KAKAME_KATO建筑工。"
+        ],
+        "related_tables": [
+          "datasets/boq_items.csv",
+          "datasets/change_orders.csv",
+          "datasets/markup_rules.csv",
+          "datasets/monthly_cost_reports.csv",
+          "datasets/pricing_workitems_subset.csv",
+          "datasets/project_briefs.csv",
+          "datasets/rate_summary.csv",
+          "datasets/selection_manifest.json",
+          "datasets/subcontractor_quotes.csv"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_project_boq_markup_estimate",
+    "source": "skill_benchmark",
+    "difficulty": "medium",
+    "instruction": "任务背景：你是工程估算人员，需要针对 PRJ-001 读取项目基础信息、BOQ 清单和 markup 规则，计算土方工程直接成本，并按匹配的加成规则生成完整估算栈。每轮请直接返回结构化答案。",
+    "data_assets": [
+      {
+        "path": "datas/建筑/boq_items.csv",
+        "type": "csv",
+        "env_path": "datasets/boq_items.csv"
+      },
+      {
+        "path": "datas/建筑/change_orders.csv",
+        "type": "csv",
+        "env_path": "datasets/change_orders.csv"
+      },
+      {
+        "path": "datas/建筑/markup_rules.csv",
+        "type": "csv",
+        "env_path": "datasets/markup_rules.csv"
+      },
+      {
+        "path": "datas/建筑/monthly_cost_reports.csv",
+        "type": "csv",
+        "env_path": "datasets/monthly_cost_reports.csv"
+      },
+      {
+        "path": "datas/建筑/pricing_workitems_subset.csv",
+        "type": "csv",
+        "env_path": "datasets/pricing_workitems_subset.csv"
+      },
+      {
+        "path": "datas/建筑/project_briefs.csv",
+        "type": "csv",
+        "env_path": "datasets/project_briefs.csv"
+      },
+      {
+        "path": "datas/建筑/rate_summary.csv",
+        "type": "csv",
+        "env_path": "datasets/rate_summary.csv"
+      },
+      {
+        "path": "datas/建筑/selection_manifest.json",
+        "type": "json",
+        "env_path": "datasets/selection_manifest.json"
+      },
+      {
+        "path": "datas/建筑/subcontractor_quotes.csv",
+        "type": "csv",
+        "env_path": "datasets/subcontractor_quotes.csv"
+      }
+    ],
+    "skills": [
+      "afrexai-construction-estimator"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "先确认这次 BOQ 加价测算对应的项目编号，并说明使用的是哪组项目和清单资料。",
+        "score_points": [
+          "答案需要明确项目编号为 PRJ-001。"
+        ],
+        "related_tables": [
+          "datasets/boq_items.csv",
+          "datasets/change_orders.csv",
+          "datasets/markup_rules.csv",
+          "datasets/monthly_cost_reports.csv",
+          "datasets/pricing_workitems_subset.csv",
+          "datasets/project_briefs.csv",
+          "datasets/rate_summary.csv",
+          "datasets/selection_manifest.json",
+          "datasets/subcontractor_quotes.csv"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "请把项目清单逐项测算出来，至少包含 BOQ 编号、费率代码、调整后工程量、综合单价和分项成本。",
+        "score_points": [
+          "清单项中需要包含第 1 个结果：BOQ 编号为 BOQ-001，费率代码为 KAME_KAME_KAKADX_KADX，调整后工程量为 0.84，综合单价为 6571.85，分项成本为 5520.35。",
+          "清单项中需要包含第 2 个结果：BOQ 编号为 BOQ-002，费率代码为 KAME_KAME_KAKADX_KALI，调整后工程量为 0.97，综合单价为 3990.05，分项成本为 3854.39。",
+          "清单项中需要包含第 3 个结果：BOQ 编号为 BOQ-003，费率代码为 KAME_KAME_KAKADX_KAME建筑工，调整后工程量为 1.09，综合单价为 2892.11，分项成本为 3158.19。",
+          "清单项中需要包含第 4 个结果：BOQ 编号为 BOQ-004，费率代码为 KAME_KAME_KAKADX_KANE，调整后工程量为 1.22，综合单价为 8453.87，分项成本为 10296.81。"
+        ],
+        "related_tables": [
+          "datasets/boq_items.csv",
+          "datasets/change_orders.csv",
+          "datasets/markup_rules.csv",
+          "datasets/monthly_cost_reports.csv",
+          "datasets/pricing_workitems_subset.csv",
+          "datasets/project_briefs.csv",
+          "datasets/rate_summary.csv",
+          "datasets/selection_manifest.json",
+          "datasets/subcontractor_quotes.csv"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "基于这些清单项，请汇总项目的直接成本。",
+        "score_points": [
+          "直接成本合计应为 22829.74。"
+        ],
+        "related_tables": [
+          "datasets/boq_items.csv",
+          "datasets/change_orders.csv",
+          "datasets/markup_rules.csv",
+          "datasets/monthly_cost_reports.csv",
+          "datasets/pricing_workitems_subset.csv",
+          "datasets/project_briefs.csv",
+          "datasets/rate_summary.csv",
+          "datasets/selection_manifest.json",
+          "datasets/subcontractor_quotes.csv"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "请继续套用加价规则，给出现场经费、管理费、利润、预备费和合同总价。",
+        "score_points": [
+          "加价测算需要覆盖：现场经费为 2054.68，管理费为 1244.22，利润为 1306.43，预备费为 1369.78，保函费用为 432.07，调价费用为 767.47，总估算为 30004.4。"
+        ],
+        "related_tables": [
+          "datasets/boq_items.csv",
+          "datasets/change_orders.csv",
+          "datasets/markup_rules.csv",
+          "datasets/monthly_cost_reports.csv",
+          "datasets/pricing_workitems_subset.csv",
+          "datasets/project_briefs.csv",
+          "datasets/rate_summary.csv",
+          "datasets/selection_manifest.json",
+          "datasets/subcontractor_quotes.csv"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_002_apt_company_summary",
+    "source": "skill_benchmark",
+    "difficulty": "open_ended",
+    "instruction": "任务背景：你是上市公司财务分析人员，需要基于奥普特的本地结构化财务报表、指标变动说明和原始财报文件，整理一份单公司财务摘要。分析应覆盖收入/利润/现金流/资产负债等关键事实、重要变化原因和风险提示；不得给出买卖评级、目标价或仓位建议。每轮请直接回答当前分析项。",
+    "data_assets": [
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_benefit_report.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_benefit_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_benefit_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_benefit_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_benefit_year.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_benefit_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_cash_report.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_cash_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_cash_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_cash_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_cash_year.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_cash_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_debt_report.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_debt_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_debt_year.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_debt_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_main_report.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_main_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_main_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_main_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_main_year.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_main_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/奥普特：2025年半年度报告.pdf",
+        "type": "pdf",
+        "env_path": "datasets/奥普特/奥普特：2025年半年度报告.pdf"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/奥普特：2025年第三季度报告.pdf",
+        "type": "pdf",
+        "env_path": "datasets/奥普特/奥普特：2025年第三季度报告.pdf"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/奥普特：2025年第一季度报告.pdf",
+        "type": "pdf",
+        "env_path": "datasets/奥普特/奥普特：2025年第一季度报告.pdf"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/奥普特：2025年年度报告.pdf",
+        "type": "pdf",
+        "env_path": "datasets/奥普特/奥普特：2025年年度报告.pdf"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/奥普特：2026年第一季度报告.pdf",
+        "type": "pdf",
+        "env_path": "datasets/奥普特/奥普特：2026年第一季度报告.pdf"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/指标变动说明.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/奥普特/指标变动说明.xlsx"
+      }
+    ],
+    "skills": [
+      "investoday-finance-data",
+      "investoday-stock-financial-analysis"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "先确认这份公司摘要的对象和年份范围，回答里要能看出公司名、股票代码以及 2025/2026 的分析口径。",
+        "score_points": [
+          "基础对象信息需要包含 奥普特。",
+          "基础对象信息需要包含 688686。",
+          "基础对象信息需要包含 2026。",
+          "基础对象信息需要包含 2025。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/奥普特：2025年半年度报告.pdf",
+          "datasets/奥普特/奥普特：2025年第三季度报告.pdf",
+          "datasets/奥普特/奥普特：2025年第一季度报告.pdf",
+          "datasets/奥普特/奥普特：2025年年度报告.pdf",
+          "datasets/奥普特/奥普特：2026年第一季度报告.pdf",
+          "datasets/奥普特/指标变动说明.xlsx"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "请提炼奥普特摘要里必须出现的核心数字事实，覆盖 2025 年全年和 2026Q1 的收入、利润、现金流、资产负债、应收和存货等指标。",
+        "score_points": [
+          "核心数字事实需要完整列出 15 项，不应漏项或随意合并。",
+          "核心数字事实的前 5 项需要依次覆盖：1）对应 2025 年营业收入，可用数值表述包括 12.69、1.269、1269、1.269E+09；2）对应 2025 年营业收入 yoy，可用数值表述包括 39.24%；3）对应 2025 年净利润，可用数值表述包括 1.86、1.861、18617.93、186179300；4）对应 2025 年净利润 yoy，可用数值表述包括 36.63%；5）对应 2026 年一季度营业收入，可用数值表述包括 3.57、357435776。",
+          "核心数字事实的后 3 项需要覆盖：1）对应 2026 年一季度负债总额，可用数值表述包括 5.32、532397100；2）对应 2026 年一季度应收账款，可用数值表述包括 9.31、931326300；3）对应 2026 年一季度存货，可用数值表述包括 3.88、388011000。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/奥普特：2025年半年度报告.pdf",
+          "datasets/奥普特/奥普特：2025年第三季度报告.pdf",
+          "datasets/奥普特/奥普特：2025年第一季度报告.pdf",
+          "datasets/奥普特/奥普特：2025年年度报告.pdf",
+          "datasets/奥普特/奥普特：2026年第一季度报告.pdf",
+          "datasets/奥普特/指标变动说明.xlsx"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "除了数字，帮我整理这份摘要应讨论的主题线索，比如盈利能力、经营现金流、应收账款、存货和增长原因。",
+        "score_points": [
+          "主题线索需要覆盖 毛利率、高毛利、盈利能力。",
+          "主题线索需要覆盖 经营现金流、现金流。",
+          "主题线索需要覆盖 应收账款、应收。",
+          "主题线索需要覆盖 存货。",
+          "主题线索需要覆盖 下游行业景气度、AI质检、东莞泰莱、回款。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/奥普特：2025年半年度报告.pdf",
+          "datasets/奥普特/奥普特：2025年第三季度报告.pdf",
+          "datasets/奥普特/奥普特：2025年第一季度报告.pdf",
+          "datasets/奥普特/奥普特：2025年年度报告.pdf",
+          "datasets/奥普特/奥普特：2026年第一季度报告.pdf",
+          "datasets/奥普特/指标变动说明.xlsx"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "这份摘要只做事实分析，不做投资建议。请列出回答里应避免出现的买卖或仓位类措辞。",
+        "score_points": [
+          "应避免的表述需要包含 买入。",
+          "应避免的表述需要包含 卖出。",
+          "应避免的表述需要包含 目标价。",
+          "应避免的表述需要包含 仓位。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/奥普特：2025年半年度报告.pdf",
+          "datasets/奥普特/奥普特：2025年第三季度报告.pdf",
+          "datasets/奥普特/奥普特：2025年第一季度报告.pdf",
+          "datasets/奥普特/奥普特：2025年年度报告.pdf",
+          "datasets/奥普特/奥普特：2026年第一季度报告.pdf",
+          "datasets/奥普特/指标变动说明.xlsx"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_004_financial_anomaly_qa",
+    "source": "skill_benchmark",
+    "difficulty": "hard",
+    "instruction": "任务背景：你是上市公司财务问答分析人员，需要基于奥普特和大族数控的本地财务表、指标变动文件和诊断文本，回答 12 个固定财务问题。问题涉及公司识别、收入/利润增速、毛利率、经营现金流、异常原因和横向比较。每轮对应一个 Task，请直接给出答案和必要依据。",
+    "data_assets": [
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_benefit_report.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_benefit_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_benefit_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_benefit_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_benefit_year.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_benefit_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_cash_report.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_cash_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_cash_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_cash_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_cash_year.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_cash_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_debt_report.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_debt_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_debt_year.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_debt_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_main_report.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_main_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_main_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_main_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_main_year.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_main_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/指标变动说明.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/奥普特/指标变动说明.xlsx"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_benefit_report.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_benefit_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_benefit_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_benefit_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_benefit_year.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_benefit_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_cash_report.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_cash_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_cash_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_cash_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_cash_year.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_cash_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_debt_report.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_debt_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_main_report.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_main_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_main_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_main_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_main_year.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_main_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/财务诊断.txt",
+        "type": "txt",
+        "env_path": "datasets/大族数控/财务诊断.txt"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/指标变动.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/大族数控/指标变动.xlsx"
+      }
+    ],
+    "skills": [
+      "investoday-finance-data",
+      "investoday-stock-financial-analysis"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "Task 1：APT 的股票代码是什么？请只给出代码，并可附一句本地资料依据。",
+        "score_points": [
+          "答案需要给出 APT 的股票代码 688686。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "Task 2：大族数控的股票代码是什么？请只给出代码，并可附一句本地资料依据。",
+        "score_points": [
+          "答案需要给出大族数控的股票代码 301200。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "Task 3：2026 年一季度，两家公司里谁的营业总收入同比增速更高？",
+        "score_points": [
+          "答案需要判断 2026 年一季度营业总收入同比增速更高的是大族数控。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "Task 4：奥普特 2026 年一季度营业总收入同比增速是多少？请保留表格原始精度。",
+        "score_points": [
+          "答案需要给出奥普特 2026 年一季度营业总收入同比增速 33.51%。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "Task 5：大族数控 2026 年一季度营业总收入同比增速是多少？请保留表格原始精度。",
+        "score_points": [
+          "答案需要给出大族数控 2026 年一季度营业总收入同比增速 103.69%。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "Task 6：2026 年一季度，两家公司谁的毛利率更高？",
+        "score_points": [
+          "答案需要判断 2026 年一季度毛利率更高的是奥普特。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 6,
+        "question": "Task 7：2026 年一季度，哪家公司经营活动现金流量净额为负？",
+        "score_points": [
+          "答案需要判断 2026 年一季度经营活动现金流量净额为负的是大族数控。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 7,
+        "question": "Task 8：大族数控 2026 年一季度经营活动现金流量净额是多少亿元？请四舍五入到 2 位小数。",
+        "score_points": [
+          "答案需要给出大族数控 2026 年一季度经营活动现金流量净额约为 -6.46 亿元，允许 0.02 以内的误差。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 8,
+        "question": "Task 9：大族数控 2026 年一季度货币资金大幅增加的主要原因是什么？请用一句简短中文回答。",
+        "score_points": [
+          "答案需要同时提到香港、IPO、募资，说明这是大族数控货币资金大幅增加的主要原因。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 9,
+        "question": "Task 10：奥普特 2026 年一季度营业收入增长的主要原因有哪些？请用三个短语概括。",
+        "score_points": [
+          "答案需要概括奥普特收入增长的三类原因：下游景气相关因素、AI 质检需求相关因素、东莞泰莱并购相关因素。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 10,
+        "question": "Task 11：2025 年全年营业总收入更大的是哪家公司？",
+        "score_points": [
+          "答案需要判断 2025 年全年营业总收入更大的是大族数控。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 11,
+        "question": "Task 12：2025 年全年毛利率更高的是哪家公司？",
+        "score_points": [
+          "答案需要判断 2025 年全年毛利率更高的是奥普特。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_003_peer_financial_comparison",
+    "source": "skill_benchmark",
+    "difficulty": "hard",
+    "instruction": "任务背景：你是上市公司同行比较分析人员，需要基于奥普特与大族数控/301200 的本地财务报表和说明材料，形成结构化同行比较。比较维度包括营收规模、收入增长、净利润增长、盈利能力、经营现金流质量、资产负债安全性和核心差异。每轮请直接返回当前维度的结构化结论。",
+    "data_assets": [
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_benefit_report.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_benefit_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_benefit_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_benefit_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_benefit_year.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_benefit_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_cash_report.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_cash_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_cash_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_cash_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_cash_year.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_cash_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_debt_report.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_debt_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_debt_year.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_debt_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_main_report.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_main_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_main_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_main_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/688686_main_year.xls",
+        "type": "xls",
+        "env_path": "datasets/奥普特/688686_main_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/奥普特/指标变动说明.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/奥普特/指标变动说明.xlsx"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_benefit_report.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_benefit_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_benefit_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_benefit_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_benefit_year.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_benefit_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_cash_report.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_cash_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_cash_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_cash_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_cash_year.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_cash_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_debt_report.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_debt_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_main_report.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_main_report.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_main_simple.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_main_simple.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/301200_main_year.xls",
+        "type": "xls",
+        "env_path": "datasets/大族数控/301200_main_year.xls"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/财务诊断.txt",
+        "type": "txt",
+        "env_path": "datasets/大族数控/财务诊断.txt"
+      },
+      {
+        "path": "datas/上市公司财务报表/大族数控/指标变动.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/大族数控/指标变动.xlsx"
+      }
+    ],
+    "skills": [
+      "investoday-finance-data",
+      "investoday-stock-financial-analysis"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "先搭一个同行比较框架：奥普特和大族数控要从哪些维度比，结果里至少应包含哪些判断项？",
+        "score_points": [
+          "比较框架需要包含“比较对象 A”这一判断项。",
+          "比较框架需要包含“比较对象 B”这一判断项。",
+          "比较框架需要包含“营收规模胜出方”这一判断项。",
+          "比较框架需要包含“收入增长胜出方”这一判断项。",
+          "比较框架需要包含“净利润增长胜出方”这一判断项。",
+          "比较框架需要包含“盈利能力胜出方”这一判断项。",
+          "比较框架需要包含“现金流质量胜出方”这一判断项。",
+          "比较框架需要包含“资产负债安全性胜出方”这一判断项。",
+          "比较框架需要包含“前三个核心差异”这一判断项。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "现在按这个框架给出胜出方判断：谁规模更大，谁增长更快，谁盈利、现金流和资产负债更稳？",
+        "score_points": [
+          "答案需要明确比较对应奥普特和大族数控。",
+          "营收规模、收入增长和净利润增长三个维度的胜出方应为大族数控。",
+          "盈利能力、现金流质量和资产负债安全性三个维度的胜出方应为奥普特。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "请补上支撑比较结论的关键证据数字，收入、增速、毛利率、现金流和资产负债都要覆盖。",
+        "score_points": [
+          "证据说明需要覆盖 57.73、12.69、收入、营收。",
+          "证据说明需要覆盖 72.68%、39.24%、103.69%、33.51%。",
+          "证据说明需要覆盖 35.12%、60.86%、33.12%、57.73%、毛利。",
+          "证据说明需要覆盖 -6.46、405、经营现金流、现金流。",
+          "证据说明需要覆盖 159.2、36.96、47.02、5.32、资产、负债。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "这份同行比较不要变成投研建议，哪些买卖和仓位类表述应避免？",
+        "score_points": [
+          "应避免的表述需要包含 买入。",
+          "应避免的表述需要包含 卖出。",
+          "应避免的表述需要包含 目标价。",
+          "应避免的表述需要包含 仓位。"
+        ],
+        "related_tables": [
+          "datasets/奥普特/688686_benefit_report.xls",
+          "datasets/奥普特/688686_benefit_simple.xls",
+          "datasets/奥普特/688686_benefit_year.xls",
+          "datasets/奥普特/688686_cash_report.xls",
+          "datasets/奥普特/688686_cash_simple.xls",
+          "datasets/奥普特/688686_cash_year.xls",
+          "datasets/奥普特/688686_debt_report.xls",
+          "datasets/奥普特/688686_debt_year.xls",
+          "datasets/奥普特/688686_main_report.xls",
+          "datasets/奥普特/688686_main_simple.xls",
+          "datasets/奥普特/688686_main_year.xls",
+          "datasets/奥普特/指标变动说明.xlsx",
+          "datasets/大族数控/301200_benefit_report.xls",
+          "datasets/大族数控/301200_benefit_simple.xls",
+          "datasets/大族数控/301200_benefit_year.xls",
+          "datasets/大族数控/301200_cash_report.xls",
+          "datasets/大族数控/301200_cash_simple.xls",
+          "datasets/大族数控/301200_cash_year.xls",
+          "datasets/大族数控/301200_debt_report.xls",
+          "datasets/大族数控/301200_main_report.xls",
+          "datasets/大族数控/301200_main_simple.xls",
+          "datasets/大族数控/301200_main_year.xls",
+          "datasets/大族数控/财务诊断.txt",
+          "datasets/大族数控/指标变动.xlsx"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_file_organizer_mixed_table_classification_table",
+    "source": "skill_benchmark",
+    "difficulty": "medium",
+    "instruction": "任务背景：你是文件整理与表格分类助手，需要读取 datasets/ 中一组混杂下载文件，根据文件名和内容判断业务类别、文档类型，并识别完全重复的文件关系。目标是形成一张结构化分类表，但在本 benchmark 中每轮直接返回当前部分答案，不需要实际移动文件或写 CSV。",
+    "data_assets": [
+      {
+        "path": "datas/文件整理/3标清单_土整.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/3标清单_土整.xlsx"
+      },
+      {
+        "path": "datas/文件整理/办公室装修报价_待审.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/办公室装修报价_待审.xlsx"
+      },
+      {
+        "path": "datas/文件整理/发货明细-老模板.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/发货明细-老模板.xlsx"
+      },
+      {
+        "path": "datas/文件整理/供应商报价.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/供应商报价.xlsx"
+      },
+      {
+        "path": "datas/文件整理/供应商报价(1).xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/供应商报价(1).xlsx"
+      },
+      {
+        "path": "datas/文件整理/监理资质名单.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/监理资质名单.xlsx"
+      },
+      {
+        "path": "datas/文件整理/库存盘点(自动算采购).xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/库存盘点(自动算采购).xlsx"
+      },
+      {
+        "path": "datas/文件整理/原料入库总账.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/原料入库总账.xlsx"
+      },
+      {
+        "path": "datas/文件整理/运输费预算-final.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/运输费预算-final.xlsx"
+      },
+      {
+        "path": "datas/文件整理/运输费预算-final(1).xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/运输费预算-final(1).xlsx"
+      },
+      {
+        "path": "datas/文件整理/周生产计划_临时.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/周生产计划_临时.xlsx"
+      },
+      {
+        "path": "datas/文件整理/主要材料运费测算.xls",
+        "type": "xls",
+        "env_path": "datasets/主要材料运费测算.xls"
+      },
+      {
+        "path": "datas/文件整理/e_invoice_sheet1.csv",
+        "type": "csv",
+        "env_path": "datasets/e_invoice_sheet1.csv"
+      },
+      {
+        "path": "datas/文件整理/e_invoice_sheet3.csv",
+        "type": "csv",
+        "env_path": "datasets/e_invoice_sheet3.csv"
+      }
+    ],
+    "skills": [
+      "docx",
+      "file-organizer",
+      "pdf",
+      "planning-with-files",
+      "pptx"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "先帮我设计最终文件分类表的列，能表达原文件名、建议目录、文档类型、重复分组和复制状态即可。",
+        "score_points": [
+          "分类表列中需要包含第 1 个结果：原文件名。",
+          "分类表列中需要包含第 2 个结果：建议目录。",
+          "分类表列中需要包含第 3 个结果：文档类型。",
+          "分类表列中需要包含第 4 个结果：重复分组。",
+          "分类表列中需要包含第 5 个结果：复制状态。"
+        ],
+        "related_tables": [
+          "datasets/3标清单_土整.xlsx",
+          "datasets/办公室装修报价_待审.xlsx",
+          "datasets/发货明细-老模板.xlsx",
+          "datasets/供应商报价.xlsx",
+          "datasets/供应商报价(1).xlsx",
+          "datasets/监理资质名单.xlsx",
+          "datasets/库存盘点(自动算采购).xlsx",
+          "datasets/原料入库总账.xlsx",
+          "datasets/运输费预算-final.xlsx",
+          "datasets/运输费预算-final(1).xlsx",
+          "datasets/周生产计划_临时.xlsx",
+          "datasets/主要材料运费测算.xls",
+          "datasets/e_invoice_sheet1.csv",
+          "datasets/e_invoice_sheet3.csv"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "整理文件时，copy_status 允许用哪些状态值？请直接列出可用状态。",
+        "score_points": [
+          "复制状态取值中需要包含第 1 个结果：unique。",
+          "复制状态取值中需要包含第 2 个结果：primary。",
+          "复制状态取值中需要包含第 3 个结果：duplicate。"
+        ],
+        "related_tables": [
+          "datasets/3标清单_土整.xlsx",
+          "datasets/办公室装修报价_待审.xlsx",
+          "datasets/发货明细-老模板.xlsx",
+          "datasets/供应商报价.xlsx",
+          "datasets/供应商报价(1).xlsx",
+          "datasets/监理资质名单.xlsx",
+          "datasets/库存盘点(自动算采购).xlsx",
+          "datasets/原料入库总账.xlsx",
+          "datasets/运输费预算-final.xlsx",
+          "datasets/运输费预算-final(1).xlsx",
+          "datasets/周生产计划_临时.xlsx",
+          "datasets/主要材料运费测算.xls",
+          "datasets/e_invoice_sheet1.csv",
+          "datasets/e_invoice_sheet3.csv"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "请盘点 incoming_drop 里的源文件清单，确认共有多少个文件，并按稳定顺序列出来。",
+        "score_points": [
+          "源文件清单需要完整列出 14 项，不应漏项或随意合并。",
+          "源文件清单的前 5 项需要依次覆盖：3标清单_土整.xlsx、e_invoice_sheet1.csv、e_invoice_sheet3.csv、主要材料运费测算.xls、供应商报价(1).xlsx。",
+          "源文件清单的后 3 项需要覆盖：监理资质名单.xlsx、运输费预算-final(1).xlsx、运输费预算-final.xlsx。"
+        ],
+        "related_tables": [
+          "datasets/3标清单_土整.xlsx",
+          "datasets/办公室装修报价_待审.xlsx",
+          "datasets/发货明细-老模板.xlsx",
+          "datasets/供应商报价.xlsx",
+          "datasets/供应商报价(1).xlsx",
+          "datasets/监理资质名单.xlsx",
+          "datasets/库存盘点(自动算采购).xlsx",
+          "datasets/原料入库总账.xlsx",
+          "datasets/运输费预算-final.xlsx",
+          "datasets/运输费预算-final(1).xlsx",
+          "datasets/周生产计划_临时.xlsx",
+          "datasets/主要材料运费测算.xls",
+          "datasets/e_invoice_sheet1.csv",
+          "datasets/e_invoice_sheet3.csv"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "请识别这批文件里完全重复的文件对，指出哪个保留为主文件、哪个标成副本。",
+        "score_points": [
+          "重复文件对中需要包含第 1 个结果：重复对标识为 dup_supplier_quote，主文件为 供应商报价.xlsx，副本为 供应商报价(1).xlsx。",
+          "重复文件对中需要包含第 2 个结果：重复对标识为 dup_transport_budget，主文件为 运输费预算-final.xlsx，副本为 运输费预算-final(1).xlsx。"
+        ],
+        "related_tables": [
+          "datasets/3标清单_土整.xlsx",
+          "datasets/办公室装修报价_待审.xlsx",
+          "datasets/发货明细-老模板.xlsx",
+          "datasets/供应商报价.xlsx",
+          "datasets/供应商报价(1).xlsx",
+          "datasets/监理资质名单.xlsx",
+          "datasets/库存盘点(自动算采购).xlsx",
+          "datasets/原料入库总账.xlsx",
+          "datasets/运输费预算-final.xlsx",
+          "datasets/运输费预算-final(1).xlsx",
+          "datasets/周生产计划_临时.xlsx",
+          "datasets/主要材料运费测算.xls",
+          "datasets/e_invoice_sheet1.csv",
+          "datasets/e_invoice_sheet3.csv"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "除重复副本外，哪些文件应该被视为唯一文件？请列出文件名。",
+        "score_points": [
+          "唯一文件清单中需要包含第 1 个结果：3标清单_土整.xlsx。",
+          "唯一文件清单中需要包含第 2 个结果：e_invoice_sheet1.csv。",
+          "唯一文件清单中需要包含第 3 个结果：e_invoice_sheet3.csv。",
+          "唯一文件清单中需要包含第 4 个结果：主要材料运费测算.xls。",
+          "唯一文件清单中需要包含第 5 个结果：办公室装修报价_待审.xlsx。",
+          "唯一文件清单中需要包含第 6 个结果：原料入库总账.xlsx。",
+          "唯一文件清单中需要包含第 7 个结果：发货明细-老模板.xlsx。",
+          "唯一文件清单中需要包含第 8 个结果：周生产计划_临时.xlsx。",
+          "唯一文件清单中需要包含第 9 个结果：库存盘点(自动算采购).xlsx。",
+          "唯一文件清单中需要包含第 10 个结果：监理资质名单.xlsx。"
+        ],
+        "related_tables": [
+          "datasets/3标清单_土整.xlsx",
+          "datasets/办公室装修报价_待审.xlsx",
+          "datasets/发货明细-老模板.xlsx",
+          "datasets/供应商报价.xlsx",
+          "datasets/供应商报价(1).xlsx",
+          "datasets/监理资质名单.xlsx",
+          "datasets/库存盘点(自动算采购).xlsx",
+          "datasets/原料入库总账.xlsx",
+          "datasets/运输费预算-final.xlsx",
+          "datasets/运输费预算-final(1).xlsx",
+          "datasets/周生产计划_临时.xlsx",
+          "datasets/主要材料运费测算.xls",
+          "datasets/e_invoice_sheet1.csv",
+          "datasets/e_invoice_sheet3.csv"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "请给出完整分类参考表：每个 incoming_drop 文件对应建议目录、文档类型、重复组和复制状态。",
+        "score_points": [
+          "分类参考表需要完整列出 14 项，不应漏项或随意合并。",
+          "分类参考表的前 5 项需要依次覆盖：1）原文件名为 3标清单_土整.xlsx，建议目录为 compliance_tender，文档类型为 bill_of_quantities；2）原文件名为 e_invoice_sheet1.csv，建议目录为 sales_and_invoicing，文档类型为 invoice_register；3）原文件名为 e_invoice_sheet3.csv，建议目录为 sales_and_invoicing，文档类型为 invoice_register；4）原文件名为 主要材料运费测算.xls，建议目录为 logistics_transport，文档类型为 transport_cost_sheet；5）原文件名为 供应商报价(1).xlsx，建议目录为 quotes_costing，文档类型为 supplier_quote。",
+          "分类参考表的后 3 项需要覆盖：1）原文件名为 监理资质名单.xlsx，建议目录为 compliance_tender，文档类型为 qualification_list；2）原文件名为 运输费预算-final(1).xlsx，建议目录为 logistics_transport，文档类型为 transport_budget；3）原文件名为 运输费预算-final.xlsx，建议目录为 logistics_transport，文档类型为 transport_budget。"
+        ],
+        "related_tables": [
+          "datasets/3标清单_土整.xlsx",
+          "datasets/办公室装修报价_待审.xlsx",
+          "datasets/发货明细-老模板.xlsx",
+          "datasets/供应商报价.xlsx",
+          "datasets/供应商报价(1).xlsx",
+          "datasets/监理资质名单.xlsx",
+          "datasets/库存盘点(自动算采购).xlsx",
+          "datasets/原料入库总账.xlsx",
+          "datasets/运输费预算-final.xlsx",
+          "datasets/运输费预算-final(1).xlsx",
+          "datasets/周生产计划_临时.xlsx",
+          "datasets/主要材料运费测算.xls",
+          "datasets/e_invoice_sheet1.csv",
+          "datasets/e_invoice_sheet3.csv"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_faers_medication_reconciliation_octreotide",
+    "source": "skill_benchmark",
+    "difficulty": "medium",
+    "instruction": "任务背景：你是用药核对助手，需要基于 datasets/faers_medication_reconciliation_case.xlsx 中的病例背景和用药记录，对入院前用药与住院医嘱进行 reconciliation。需要识别延续用药、剂量变化、停用药、新增住院药、重复医嘱和必要警示。",
+    "data_assets": [
+      {
+        "path": "datas/医疗诊断/faers_medication_reconciliation_case.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/faers_medication_reconciliation_case.xlsx"
+      }
+    ],
+    "skills": [
+      "medical-terms",
+      "medication-reconciliation",
+      "xlsx"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "先确认这份用药核对案例的患者标识。",
+        "score_points": [
+          "患者标识需要为 FAERS-10016781。"
+        ],
+        "related_tables": [
+          "datasets/faers_medication_reconciliation_case.xlsx"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "再确认这个病例对应的 FAERS case id。",
+        "score_points": [
+          "病例编号需要为 10016781。"
+        ],
+        "related_tables": [
+          "datasets/faers_medication_reconciliation_case.xlsx"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "请给这个病例做用药核对总览：入院前、住院中、继续用、剂量变化、停用、新增和重复用药分别有多少。",
+        "score_points": [
+          "用药核对总览需要说明：入院前用药数为 6，住院用药数为 5，继续用药数为 2，剂量变化数为 1，停用数为 3，新增数为 1，重复用药组数为 1，预警数为 3。"
+        ],
+        "related_tables": [
+          "datasets/faers_medication_reconciliation_case.xlsx"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "哪些入院前用药在住院期间继续使用？请列出药名和通用名。",
+        "score_points": [
+          "继续用药清单中需要包含第 1 个结果：药品名为 AFINITOR，通用名为 EVEROLIMUS。",
+          "继续用药清单中需要包含第 2 个结果：药品名为 DEXILANT，通用名为 DEXLANSOPRAZOLE。"
+        ],
+        "related_tables": [
+          "datasets/faers_medication_reconciliation_case.xlsx"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "找出剂量或给药频次发生变化的药物，尤其留意 octreotide 相关记录。",
+        "score_points": [
+          "剂量变化清单中需要包含第 1 个结果：通用名为 OCTREOTIDE ACETATE，入院前药品为 SANDOSTATIN LAR DEPOT，入院前剂量为 30 mg，住院药品为 SANDOSTATIN，住院剂量为 20 mg。"
+        ],
+        "related_tables": [
+          "datasets/faers_medication_reconciliation_case.xlsx"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "哪些入院前药物住院后停用了？请标出需要重点预警的关键药物。",
+        "score_points": [
+          "停用药物清单中需要包含第 1 个结果：药品名为 INSULIN NOS，通用名为 INSULIN NOS，关键用药为 true。",
+          "停用药物清单中需要包含第 2 个结果：药品名为 CRESTOR，通用名为 ROSUVASTATIN CALCIUM，关键用药为 false。",
+          "停用药物清单中需要包含第 3 个结果：药品名为 ASPIRIN，通用名为 ASPIRIN，关键用药为 false。"
+        ],
+        "related_tables": [
+          "datasets/faers_medication_reconciliation_case.xlsx"
+        ]
+      },
+      {
+        "idx": 6,
+        "question": "住院期间新增了哪些药物？请列出药名和通用名。",
+        "score_points": [
+          "新增药物清单中需要包含第 1 个结果：药品名为 VITAMIN D，通用名为 VITAMIN D NOS。"
+        ],
+        "related_tables": [
+          "datasets/faers_medication_reconciliation_case.xlsx"
+        ]
+      },
+      {
+        "idx": 7,
+        "question": "核对一下是否存在重复治疗成分，尤其是 octreotide acetate。",
+        "score_points": [
+          "重复用药清单中需要包含第 1 个结果：通用名为 OCTREOTIDE ACETATE，重复数为 2，涉及药名为 SANDOSTATIN、SANDOSTATIN LAR DEPOT，剂量为 20 mg。"
+        ],
+        "related_tables": [
+          "datasets/faers_medication_reconciliation_case.xlsx"
+        ]
+      },
+      {
+        "idx": 8,
+        "question": "请整理这份用药核对报告必须触发的预警语义，覆盖关键停药和重复治疗风险。",
+        "score_points": [
+          "预警语义中需要包含第 1 个结果：需同时包含 INSULIN、critical。",
+          "预警语义中需要包含第 2 个结果：需同时包含 OCTREOTIDE、dose。",
+          "预警语义中需要包含第 3 个结果：需同时包含 OCTREOTIDE、duplicate。"
+        ],
+        "related_tables": [
+          "datasets/faers_medication_reconciliation_case.xlsx"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_bank_reconciliation_augmented_audit",
+    "source": "skill_benchmark",
+    "difficulty": "hard",
+    "instruction": "任务背景：你是审计对账分析人员，需要联合银行流水、系统订单、发票台账、PDF 抽取结果和清洗后的发票数据，完成增强版三方对账审计。工作包括发票清洗汇总、发票来源统计、按固定日期/金额容差进行匹配分类、识别未匹配订单/流水以及重复流水组。每轮请直接返回当前审计字段的结构化结果。",
+    "data_assets": [
+      {
+        "path": "datas/银行流水对账/bank_transactions_augmented.csv",
+        "type": "csv",
+        "env_path": "datasets/bank_transactions_augmented.csv"
+      },
+      {
+        "path": "datas/银行流水对账/invoice_ledger_augmented.csv",
+        "type": "csv",
+        "env_path": "datasets/invoice_ledger_augmented.csv"
+      },
+      {
+        "path": "datas/银行流水对账/invoice_ledger_augmented.json",
+        "type": "json",
+        "env_path": "datasets/invoice_ledger_augmented.json"
+      },
+      {
+        "path": "datas/银行流水对账/invoices_clean.json",
+        "type": "json",
+        "env_path": "datasets/invoices_clean.json"
+      },
+      {
+        "path": "datas/银行流水对账/invoices_excluded.json",
+        "type": "json",
+        "env_path": "datasets/invoices_excluded.json"
+      },
+      {
+        "path": "datas/银行流水对账/invoices_extracted_raw.json",
+        "type": "json",
+        "env_path": "datasets/invoices_extracted_raw.json"
+      },
+      {
+        "path": "datas/银行流水对账/invoices.pdf",
+        "type": "pdf",
+        "env_path": "datasets/invoices.pdf"
+      },
+      {
+        "path": "datas/银行流水对账/prepare_augmented_dataset.ps1",
+        "type": "ps1",
+        "env_path": "datasets/prepare_augmented_dataset.ps1"
+      },
+      {
+        "path": "datas/银行流水对账/purchase_orders.csv",
+        "type": "csv",
+        "env_path": "datasets/purchase_orders.csv"
+      },
+      {
+        "path": "datas/银行流水对账/system_orders_augmented.csv",
+        "type": "csv",
+        "env_path": "datasets/system_orders_augmented.csv"
+      },
+      {
+        "path": "datas/银行流水对账/vendors.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/vendors.xlsx"
+      }
+    ],
+    "skills": [
+      "bank-reconciliation-claw",
+      "fuzzy-match",
+      "pdf",
+      "xlsx"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "开始对账前，先确认本次审计使用的参考日期。",
+        "score_points": [
+          "参考日期需要为 2026-05-22。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "请说明银行流水、订单和发票的匹配宽容规则，日期和金额分别怎么放宽。",
+        "score_points": [
+          "匹配规则需要说明日期最多允许相差 3 天。",
+          "匹配规则需要说明金额最多允许相差 1。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "先做发票清洗摘要：原始 PDF 页数、有效发票数、剔除页以及剔除原因都要说清楚。",
+        "score_points": [
+          "发票清洗摘要需要说明：原始发票页数为 53，清洗后发票数为 48，剔除页码为 4、8、15、38、45，合成发票数为 12，增强后发票数为 60。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "这些发票来源分两类，请统计从 PDF 修复和由未用 PO 合成的数量。",
+        "score_points": [
+          "发票来源摘要需要说明：从 PDF 修复数量为 48，由未用 PO 合成数量为 12。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "给出总对账摘要：系统订单、发票、银行流水的数量，以及精确匹配、模糊匹配、未匹配和重复情况。",
+        "score_points": [
+          "对账汇总需要说明系统订单数为 60。",
+          "对账汇总需要说明银行流水数为 60。",
+          "对账汇总需要说明精确匹配数为 38。",
+          "对账摘要需要说明金额容差匹配共有 7 笔。",
+          "对账汇总需要说明日期偏移匹配数为 6。",
+          "对账汇总需要说明日期和金额组合模糊匹配数为 3。",
+          "对账汇总需要说明未匹配订单数为 6。",
+          "对账汇总需要说明未匹配银行流水数为 4。",
+          "对账汇总需要说明重复银行流水组数为 2。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "请列出能够精确匹配上的订单编号，保留任务数据中的顺序和重复情况。",
+        "score_points": [
+          "精确匹配订单清单需要完整列出 38 项，不应漏项或随意合并。",
+          "精确匹配订单清单的前 5 项需要依次覆盖：PO-1017、PO-1030、PO-1050、PO-1055、PO-1072。",
+          "精确匹配订单清单的后 3 项需要覆盖：PO-1449、PO-1461、PO-1461。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 6,
+        "question": "请列出能够精确匹配上的发票编号，顺序要和对应订单清单保持一致。",
+        "score_points": [
+          "精确匹配发票清单需要完整列出 38 项，不应漏项或随意合并。",
+          "精确匹配发票清单的前 5 项需要依次覆盖：INV-202604-001、INV-202604-002、INV-202604-003、INV-202604-005、INV-202604-006。",
+          "精确匹配发票清单的后 3 项需要覆盖：INV-202604-036、INV-202604-037、INV-202604-038。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 7,
+        "question": "金额只在容差内有轻微差异的订单有哪些？请列出订单编号。",
+        "score_points": [
+          "金额容差匹配订单清单的第 1 个应为 PO-1019。",
+          "金额容差匹配订单清单的第 2 个应为 PO-1227。",
+          "金额容差匹配订单清单的第 3 个应为 PO-1343。",
+          "金额容差匹配订单清单的第 4 个应为 PO-1435。",
+          "金额容差匹配订单清单的第 5 个应为 PO-1436。",
+          "金额容差匹配订单清单的第 6 个应为 PO-1484。",
+          "金额容差匹配订单清单的第 7 个应为 PO-1487。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 8,
+        "question": "金额容差匹配对应的发票有哪些？请列出发票编号。",
+        "score_points": [
+          "金额容差匹配发票清单的第 1 个应为 INV-202604-039。",
+          "金额容差匹配发票清单的第 2 个应为 INV-202604-040。",
+          "金额容差匹配发票清单的第 3 个应为 INV-202604-041。",
+          "金额容差匹配发票清单的第 4 个应为 INV-202604-042。",
+          "金额容差匹配发票清单的第 5 个应为 INV-202604-043。",
+          "金额容差匹配发票清单的第 6 个应为 INV-202604-044。",
+          "金额容差匹配发票清单的第 7 个应为 INV-202604-045。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 9,
+        "question": "日期有偏移但仍在容忍范围内的订单有哪些？请列出订单编号。",
+        "score_points": [
+          "日期偏移订单清单中需要包含第 1 个结果：PO-1000。",
+          "日期偏移订单清单中需要包含第 2 个结果：PO-1001。",
+          "日期偏移订单清单中需要包含第 3 个结果：PO-1002。",
+          "日期偏移订单清单中需要包含第 4 个结果：PO-9001。",
+          "日期偏移订单清单中需要包含第 5 个结果：PO-9002。",
+          "日期偏移订单清单中需要包含第 6 个结果：PO-9003。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 10,
+        "question": "日期偏移匹配对应的发票有哪些？请列出发票编号。",
+        "score_points": [
+          "日期偏移发票清单中需要包含第 1 个结果：INV-202604-046。",
+          "日期偏移发票清单中需要包含第 2 个结果：INV-202604-047。",
+          "日期偏移发票清单中需要包含第 3 个结果：INV-202604-048。",
+          "日期偏移发票清单中需要包含第 4 个结果：INV-202604-049。",
+          "日期偏移发票清单中需要包含第 5 个结果：INV-202604-050。",
+          "日期偏移发票清单中需要包含第 6 个结果：INV-202604-051。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 11,
+        "question": "同时依赖日期和金额放宽才匹配上的订单有哪些？请列出订单编号。",
+        "score_points": [
+          "日期和金额同时放宽的订单清单中需要包含第 1 个结果：PO-1003。",
+          "日期和金额同时放宽的订单清单中需要包含第 2 个结果：PO-1004。",
+          "日期和金额同时放宽的订单清单中需要包含第 3 个结果：PO-1005。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 12,
+        "question": "同时依赖日期和金额放宽才匹配上的发票有哪些？请列出发票编号。",
+        "score_points": [
+          "日期和金额同时放宽的发票清单中需要包含第 1 个结果：INV-202604-052。",
+          "日期和金额同时放宽的发票清单中需要包含第 2 个结果：INV-202604-053。",
+          "日期和金额同时放宽的发票清单中需要包含第 3 个结果：INV-202604-054。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 13,
+        "question": "系统订单里还有哪些没有匹配到银行或发票？请列出订单编号。",
+        "score_points": [
+          "未匹配订单清单中需要包含第 1 个结果：PO-1006。",
+          "未匹配订单清单中需要包含第 2 个结果：PO-1007。",
+          "未匹配订单清单中需要包含第 3 个结果：PO-1008。",
+          "未匹配订单清单中需要包含第 4 个结果：PO-1009。",
+          "未匹配订单清单中需要包含第 5 个结果：PO-1010。",
+          "未匹配订单清单中需要包含第 6 个结果：PO-1011。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 14,
+        "question": "发票侧还有哪些没有匹配到订单或银行流水？请列出发票编号。",
+        "score_points": [
+          "未匹配发票清单中需要包含第 1 个结果：INV-202604-055。",
+          "未匹配发票清单中需要包含第 2 个结果：INV-202604-056。",
+          "未匹配发票清单中需要包含第 3 个结果：INV-202604-057。",
+          "未匹配发票清单中需要包含第 4 个结果：INV-202604-058。",
+          "未匹配发票清单中需要包含第 5 个结果：INV-202604-059。",
+          "未匹配发票清单中需要包含第 6 个结果：INV-202604-060。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 15,
+        "question": "银行流水侧有哪些孤立交易没有匹配到业务单据？请列出交易编号。",
+        "score_points": [
+          "未匹配银行流水清单中需要包含第 1 个结果：BT-202604-U001。",
+          "未匹配银行流水清单中需要包含第 2 个结果：BT-202604-U002。",
+          "未匹配银行流水清单中需要包含第 3 个结果：BT-202604-U003。",
+          "未匹配银行流水清单中需要包含第 4 个结果：BT-202604-U004。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      },
+      {
+        "idx": 16,
+        "question": "请指出重复入账或重复交易组，包含对应订单、原始交易和重复交易编号。",
+        "score_points": [
+          "重复流水组中需要包含第 1 个结果：订单编号为 PO-1282，原交易编号为 BT-202604-005，重复交易编号为 BT-202604-DUP01。",
+          "重复流水组中需要包含第 2 个结果：订单编号为 PO-1050，原交易编号为 BT-202604-012，重复交易编号为 BT-202604-DUP02。"
+        ],
+        "related_tables": [
+          "datasets/bank_transactions_augmented.csv",
+          "datasets/invoice_ledger_augmented.csv",
+          "datasets/invoice_ledger_augmented.json",
+          "datasets/invoices_clean.json",
+          "datasets/invoices_excluded.json",
+          "datasets/invoices_extracted_raw.json",
+          "datasets/invoices.pdf",
+          "datasets/prepare_augmented_dataset.ps1",
+          "datasets/purchase_orders.csv",
+          "datasets/system_orders_augmented.csv",
+          "datasets/vendors.xlsx"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_001_easy_country_mix_analysis",
+    "source": "skill_benchmark",
+    "difficulty": "easy",
+    "instruction": "任务背景：你是在线零售经营分析人员，需要基于 country_monthly_summary.csv 对 2011 年 11 月国家销售结构进行固定答案分析。需要计算当月净收入、订单数、客户数、非 UK 国家 Top5 收入占比，以及相较 2011 年 10 月的最大环比增长和下降国家。每轮请直接返回当前指标。",
+    "data_assets": [
+      {
+        "path": "datas/在线零售/country_monthly_summary.csv",
+        "type": "csv",
+        "env_path": "datasets/country_monthly_summary.csv"
+      }
+    ],
+    "skills": [
+      "xlsx"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "先确认这次国家销售结构分析聚焦的月份。",
+        "score_points": [
+          "目标月份需要为 2011-11。"
+        ],
+        "related_tables": [
+          "datasets/country_monthly_summary.csv"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "请计算目标月份的总净收入。",
+        "score_points": [
+          "总净收入需要为 1461756.25。"
+        ],
+        "related_tables": [
+          "datasets/country_monthly_summary.csv"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "请计算目标月份的订单总数。",
+        "score_points": [
+          "订单总数需要为 3462。"
+        ],
+        "related_tables": [
+          "datasets/country_monthly_summary.csv"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "请计算目标月份的客户总数。",
+        "score_points": [
+          "客户总数需要为 1711。"
+        ],
+        "related_tables": [
+          "datasets/country_monthly_summary.csv"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "请列出目标月份非 UK 国家净收入 Top5，并给出各自净收入和占非 UK 收入的比例。",
+        "score_points": [
+          "非 UK 国家收入 Top5 中需要包含第 1 个结果：国家为 France，净收入为 30697.51，非 UK 收入占比为 0.171542。",
+          "非 UK 国家收入 Top5 中需要包含第 2 个结果：国家为 EIRE，净收入为 30413.05，非 UK 收入占比为 0.169952。",
+          "非 UK 国家收入 Top5 中需要包含第 3 个结果：国家为 Germany，净收入为 26044.35，非 UK 收入占比为 0.145539。",
+          "非 UK 国家收入 Top5 中需要包含第 4 个结果：国家为 Netherlands，净收入为 25856.01，非 UK 收入占比为 0.144487。",
+          "非 UK 国家收入 Top5 中需要包含第 5 个结果：国家为 Spain，净收入为 8533.87，非 UK 收入占比为 0.047688。"
+        ],
+        "related_tables": [
+          "datasets/country_monthly_summary.csv"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "和 2011 年 10 月相比，哪个国家的 11 月净收入增长最多？请给出 10 月、11 月和差额。",
+        "score_points": [
+          "环比增长最多国家需要说明：国家为 EIRE，收入变化为 7105.43，10 月收入为 23307.62，11 月收入为 30413.05。"
+        ],
+        "related_tables": [
+          "datasets/country_monthly_summary.csv"
+        ]
+      },
+      {
+        "idx": 6,
+        "question": "和 2011 年 10 月相比，哪个国家的 11 月净收入下降最多？请给出 10 月、11 月和差额。",
+        "score_points": [
+          "环比下降最多国家需要说明：国家为 Netherlands，收入变化为 -14852.64，10 月收入为 40708.65，11 月收入为 25856.01。"
+        ],
+        "related_tables": [
+          "datasets/country_monthly_summary.csv"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_003_medium_customer_rfm_segmentation",
+    "source": "skill_benchmark",
+    "difficulty": "medium",
+    "instruction": "任务背景：你是客户运营分析人员，需要基于 customer_rfm_base.csv 将客户聚合成 RFM 特征，并按固定 ntile 打分和规则生成客户分群。需要报告 eligible customer 数量、各 segment 数量、Top Champions 客户和最高 monetary 客户。每轮请直接返回结构化结果。",
+    "data_assets": [
+      {
+        "path": "datas/在线零售/customer_rfm_base.csv",
+        "type": "csv",
+        "env_path": "datasets/customer_rfm_base.csv"
+      }
+    ],
+    "skills": [
+      "xlsx"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "先确认 RFM 计算使用的截止时间。",
+        "score_points": [
+          "RFM 截止时间需要为 2011-12-01 00:00:00。"
+        ],
+        "related_tables": [
+          "datasets/customer_rfm_base.csv"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "按 RFM 口径清洗后，有多少客户进入分群统计？",
+        "score_points": [
+          "入选客户数需要为 4297。"
+        ],
+        "related_tables": [
+          "datasets/customer_rfm_base.csv"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "请汇总各 RFM 客户分群的人数。",
+        "score_points": [
+          "分群人数中需要包含第 1 个结果：分群为 At Risk，客户数为 501。",
+          "分群人数中需要包含第 2 个结果：分群为 Champions，客户数为 925。",
+          "分群人数中需要包含第 3 个结果：分群为 Hibernating，客户数为 832。",
+          "分群人数中需要包含第 4 个结果：分群为 Loyal，客户数为 444。",
+          "分群人数中需要包含第 5 个结果：分群为 Others，客户数为 1184。",
+          "分群人数中需要包含第 6 个结果：分群为 Potential Loyalist，客户数为 411。"
+        ],
+        "related_tables": [
+          "datasets/customer_rfm_base.csv"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "请列出 Champions 分群中价值最高的前 10 位客户，带上 monetary、frequency 和 recency_days。",
+        "score_points": [
+          "Champions 前十客户中需要包含第 1 个结果：客户编号为 14646，消费金额为 268478，购买频次为 70，最近消费间隔天数为 7。",
+          "Champions 前十客户中需要包含第 2 个结果：客户编号为 18102，消费金额为 248171.76，购买频次为 57，最近消费间隔天数为 2。",
+          "Champions 前十客户中需要包含第 3 个结果：客户编号为 17450，消费金额为 192988.39，购买频次为 45，最近消费间隔天数为 1。",
+          "Champions 前十客户中需要包含第 4 个结果：客户编号为 14911，消费金额为 136846.14，购买频次为 192，最近消费间隔天数为 0。",
+          "Champions 前十客户中需要包含第 5 个结果：客户编号为 12415，消费金额为 124914.53，购买频次为 21，最近消费间隔天数为 15。",
+          "Champions 前十客户中需要包含第 6 个结果：客户编号为 14156，消费金额为 117379.63，购买频次为 55，最近消费间隔天数为 0。",
+          "Champions 前十客户中需要包含第 7 个结果：客户编号为 17511，消费金额为 83683.06，购买频次为 29，最近消费间隔天数为 7。",
+          "Champions 前十客户中需要包含第 8 个结果：客户编号为 16029，消费金额为 81024.84，购买频次为 63，最近消费间隔天数为 29。",
+          "Champions 前十客户中需要包含第 9 个结果：客户编号为 13694，消费金额为 61908.46，购买频次为 47，最近消费间隔天数为 16。",
+          "Champions 前十客户中需要包含第 10 个结果：客户编号为 16684，消费金额为 61251.58，购买频次为 27，最近消费间隔天数为 2。"
+        ],
+        "related_tables": [
+          "datasets/customer_rfm_base.csv"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "全体客户里 monetary 最高的是谁？请给出他的 RFM 核心指标和分群。",
+        "score_points": [
+          "消费金额最高客户需要说明：客户编号为 14646，消费金额为 268478，购买频次为 70，最近消费间隔天数为 7。"
+        ],
+        "related_tables": [
+          "datasets/customer_rfm_base.csv"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_002_medium_return_reconciliation",
+    "source": "skill_benchmark",
+    "difficulty": "medium",
+    "instruction": "任务背景：你是在线零售退货对账分析人员，需要基于 return_reconciliation_2011_11.csv 将 2011 年 11 月取消/退货记录与候选销售记录进行匹配。匹配需要使用精确 key、60 天 lookback、确定性 tie-break 和一对一分配，并汇总未匹配异常。每轮请直接返回当前对账指标。",
+    "data_assets": [
+      {
+        "path": "datas/在线零售/return_reconciliation_2011_11.csv",
+        "type": "csv",
+        "env_path": "datasets/return_reconciliation_2011_11.csv"
+      }
+    ],
+    "skills": [
+      "fuzzy-match",
+      "norman-monthly-reconciliation",
+      "xlsx"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "先确认这次退货对账分析的目标月份。",
+        "score_points": [
+          "目标月份需要为 2011-11。"
+        ],
+        "related_tables": [
+          "datasets/return_reconciliation_2011_11.csv"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "请说明取消单和原始销售单匹配时允许往前追溯多少天。",
+        "score_points": [
+          "匹配回溯窗口需要为 60。"
+        ],
+        "related_tables": [
+          "datasets/return_reconciliation_2011_11.csv"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "目标月份里一共有多少取消/退货记录需要对账？",
+        "score_points": [
+          "取消/退货记录数需要为 1053。"
+        ],
+        "related_tables": [
+          "datasets/return_reconciliation_2011_11.csv"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "这些取消记录中，有多少能匹配到原始销售记录？",
+        "score_points": [
+          "已匹配记录数需要为 311。"
+        ],
+        "related_tables": [
+          "datasets/return_reconciliation_2011_11.csv"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "还有多少取消记录没有匹配上原始销售记录？",
+        "score_points": [
+          "未匹配记录数需要为 742。"
+        ],
+        "related_tables": [
+          "datasets/return_reconciliation_2011_11.csv"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "已匹配退货对应的绝对金额合计是多少？",
+        "score_points": [
+          "已匹配绝对金额需要为 16722.38。"
+        ],
+        "related_tables": [
+          "datasets/return_reconciliation_2011_11.csv"
+        ]
+      },
+      {
+        "idx": 6,
+        "question": "未匹配退货对应的绝对金额合计是多少？",
+        "score_points": [
+          "未匹配绝对金额需要为 12687.26。"
+        ],
+        "related_tables": [
+          "datasets/return_reconciliation_2011_11.csv"
+        ]
+      },
+      {
+        "idx": 7,
+        "question": "请列出未匹配金额或行数最突出的前 5 个商品编码，并给出行数和金额。",
+        "score_points": [
+          "未匹配商品 Top5 中需要包含第 1 个结果：商品编码为 POST，未匹配行数为 15，未匹配绝对金额为 523.65。",
+          "未匹配商品 Top5 中需要包含第 2 个结果：商品编码为 D，未匹配行数为 12，未匹配绝对金额为 474.85。",
+          "未匹配商品 Top5 中需要包含第 3 个结果：商品编码为 22197，未匹配行数为 11，未匹配绝对金额为 82.86。",
+          "未匹配商品 Top5 中需要包含第 4 个结果：商品编码为 22423，未匹配行数为 10，未匹配绝对金额为 695.1。",
+          "未匹配商品 Top5 中需要包含第 5 个结果：商品编码为 22720，未匹配行数为 9，未匹配绝对金额为 69.3。"
+        ],
+        "related_tables": [
+          "datasets/return_reconciliation_2011_11.csv"
+        ]
+      },
+      {
+        "idx": 8,
+        "question": "请给出几条例子，展示未匹配取消单的发票号、商品编码、客户和金额。",
+        "score_points": [
+          "未匹配取消单样例中需要包含第 1 个结果：取消发票号为 C576338，商品编码为 CRUK，客户编号为 14096，绝对金额为 1038.75。",
+          "未匹配取消单样例中需要包含第 2 个结果：取消发票号为 C579195，商品编码为 CRUK，客户编号为 14096，绝对金额为 987.14。",
+          "未匹配取消单样例中需要包含第 3 个结果：取消发票号为 C578269，商品编码为 CRUK，客户编号为 14096，绝对金额为 849.93。",
+          "未匹配取消单样例中需要包含第 4 个结果：取消发票号为 C574922，商品编码为 22635，客户编号为 15502，绝对金额为 569.5。",
+          "未匹配取消单样例中需要包含第 5 个结果：取消发票号为 C575606，商品编码为 CRUK，客户编号为 14096，绝对金额为 517.51。",
+          "未匹配取消单样例中需要包含第 6 个结果：取消发票号为 C574322，商品编码为 22423，客户编号为 15482，绝对金额为 262.8。",
+          "未匹配取消单样例中需要包含第 7 个结果：取消发票号为 C574584，商品编码为 22423，客户编号为 15482，绝对金额为 262.8。",
+          "未匹配取消单样例中需要包含第 8 个结果：取消发票号为 C574344，商品编码为 POST，客户编号为 12415，绝对金额为 262.73。",
+          "未匹配取消单样例中需要包含第 9 个结果：取消发票号为 C576218，商品编码为 D，客户编号为 13694，绝对金额为 183。",
+          "未匹配取消单样例中需要包含第 10 个结果：取消发票号为 C574019，商品编码为 22738，客户编号为 12415，绝对金额为 174。"
+        ],
+        "related_tables": [
+          "datasets/return_reconciliation_2011_11.csv"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_004_open_ended_weekly_sales_brief",
+    "source": "skill_benchmark",
+    "difficulty": "open_ended",
+    "instruction": "任务背景：你是在线零售周报分析人员，需要结合 weekly_kpi_summary.csv、weekly_country_summary.csv 和 weekly_product_summary.csv，提取本周 KPI，并撰写简洁管理层周报。需要同时保证固定 KPI 准确，以及业务摘要覆盖周环比变化、国家和产品驱动因素，并避免无数据支持的推断。每轮请直接返回当前部分内容。",
+    "data_assets": [
+      {
+        "path": "datas/在线零售/weekly_country_summary.csv",
+        "type": "csv",
+        "env_path": "datasets/weekly_country_summary.csv"
+      },
+      {
+        "path": "datas/在线零售/weekly_kpi_summary.csv",
+        "type": "csv",
+        "env_path": "datasets/weekly_kpi_summary.csv"
+      },
+      {
+        "path": "datas/在线零售/weekly_product_summary.csv",
+        "type": "csv",
+        "env_path": "datasets/weekly_product_summary.csv"
+      }
+    ],
+    "skills": [
+      "weekly-report-generator",
+      "xlsx"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "先确认这份周报的本周和上一周日期窗口。",
+        "score_points": [
+          "周报日期窗口需要说明：本周为 2011-11-28 to 2011-12-04，上一周为 2011-11-21 to 2011-11-27。"
+        ],
+        "related_tables": [
+          "datasets/weekly_country_summary.csv",
+          "datasets/weekly_kpi_summary.csv",
+          "datasets/weekly_product_summary.csv"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "这份周报必须覆盖哪些业务判断？请列成写作要点。",
+        "score_points": [
+          "周报必写要点中需要包含第 1 个结果：Current-week revenue is above previous-week revenue.。",
+          "周报必写要点中需要包含第 2 个结果：Revenue week-over-week change is about 3.79%.。",
+          "周报必写要点中需要包含第 3 个结果：Current-week invoice count and customer count are both higher than the previous week.。",
+          "周报必写要点中需要包含第 4 个结果：Current-week cancellation rows are slightly higher than the previous week.。",
+          "周报必写要点中需要包含第 5 个结果：Current-week zero-price rows are lower than the previous week.。",
+          "周报必写要点中需要包含第 6 个结果：United Kingdom is the dominant country by current-week revenue.。",
+          "周报必写要点中需要包含第 7 个结果：France and Germany are the next two countries by current-week revenue.。",
+          "周报必写要点中需要包含第 8 个结果：DOTCOM POSTAGE, RABBIT NIGHT LIGHT, and PAPER CHAIN KIT 50'S CHRISTMAS are the top current-week products by revenue.。"
+        ],
+        "related_tables": [
+          "datasets/weekly_country_summary.csv",
+          "datasets/weekly_kpi_summary.csv",
+          "datasets/weekly_product_summary.csv"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "哪些没有数据支撑的说法不要写进周报？请列出需要规避的内容。",
+        "score_points": [
+          "周报规避内容中需要包含第 1 个结果：Do not claim unsupported pipeline, staffing, or marketing events.。",
+          "周报规避内容中需要包含第 2 个结果：Do not say revenue declined week over week.。",
+          "周报规避内容中需要包含第 3 个结果：Do not replace the top countries or products with unsupported alternatives.。"
+        ],
+        "related_tables": [
+          "datasets/weekly_country_summary.csv",
+          "datasets/weekly_kpi_summary.csv",
+          "datasets/weekly_product_summary.csv"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "请汇总本周 KPI，包括日期、净收入、发票数、客户数、订单量等核心指标。",
+        "score_points": [
+          "本周 KPI 需要说明：开始日期为 2011-11-28，结束日期为 2011-12-04，净收入为 319874.99，发票数为 824，客户数为 582，数量为 151807，取消行数为 275，零价行数为 43。"
+        ],
+        "related_tables": [
+          "datasets/weekly_country_summary.csv",
+          "datasets/weekly_kpi_summary.csv",
+          "datasets/weekly_product_summary.csv"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "请汇总上一周 KPI，口径要和本周一致。",
+        "score_points": [
+          "上一周 KPI 需要说明：开始日期为 2011-11-21，结束日期为 2011-11-27，净收入为 308185.02，发票数为 754，客户数为 518，数量为 162568，取消行数为 260，零价行数为 66。"
+        ],
+        "related_tables": [
+          "datasets/weekly_country_summary.csv",
+          "datasets/weekly_kpi_summary.csv",
+          "datasets/weekly_product_summary.csv"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "请计算本周相对上一周的收入环比变化率。",
+        "score_points": [
+          "收入环比变化率需要为 0.037932。"
+        ],
+        "related_tables": [
+          "datasets/weekly_country_summary.csv",
+          "datasets/weekly_kpi_summary.csv",
+          "datasets/weekly_product_summary.csv"
+        ]
+      },
+      {
+        "idx": 6,
+        "question": "请列出本周收入最高的 3 个国家及其净收入。",
+        "score_points": [
+          "本周国家收入 Top3 中需要包含第 1 个结果：国家为 United Kingdom，净收入为 289207.39。",
+          "本周国家收入 Top3 中需要包含第 2 个结果：国家为 France，净收入为 8158.09。",
+          "本周国家收入 Top3 中需要包含第 3 个结果：国家为 Germany，净收入为 5301.23。"
+        ],
+        "related_tables": [
+          "datasets/weekly_country_summary.csv",
+          "datasets/weekly_kpi_summary.csv",
+          "datasets/weekly_product_summary.csv"
+        ]
+      },
+      {
+        "idx": 7,
+        "question": "请列出本周收入最高的 3 个商品及其商品编码、描述和净收入。",
+        "score_points": [
+          "本周商品收入 Top3 中需要包含第 1 个结果：商品编码为 DOT，商品描述为 DOTCOM POSTAGE，净收入为 11478.08。",
+          "本周商品收入 Top3 中需要包含第 2 个结果：商品编码为 23084，商品描述为 RABBIT NIGHT LIGHT，净收入为 9263.56。",
+          "本周商品收入 Top3 中需要包含第 3 个结果：商品编码为 22086，商品描述为 PAPER CHAIN KIT 50'S CHRISTMAS，净收入为 4612.8。"
+        ],
+        "related_tables": [
+          "datasets/weekly_country_summary.csv",
+          "datasets/weekly_kpi_summary.csv",
+          "datasets/weekly_product_summary.csv"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_dabstep_payment_fee_analysis",
+    "source": "skill_benchmark",
+    "difficulty": "hard",
+    "instruction": "任务背景：你是支付手续费分析人员，需要使用 payments.csv、merchant_data.json、fees.json、manual.md 以及相关映射表，回答 DABstep 支付场景中的 10 个固定子任务。任务覆盖发卡国/IP 国家统计、欺诈风险判断、手续费规则筛选、平均费率计算和 ACI 成本迁移分析。每轮对应一个 Task，请直接返回该 Task 的最终答案和必要依据。",
+    "data_assets": [
+      {
+        "path": "datas/DABstep数据/acquirer_countries.csv",
+        "type": "csv",
+        "env_path": "datasets/acquirer_countries.csv"
+      },
+      {
+        "path": "datas/DABstep数据/fees.json",
+        "type": "json",
+        "env_path": "datasets/fees.json"
+      },
+      {
+        "path": "datas/DABstep数据/manual.md",
+        "type": "md",
+        "env_path": "datasets/manual.md"
+      },
+      {
+        "path": "datas/DABstep数据/merchant_category_codes.csv",
+        "type": "csv",
+        "env_path": "datasets/merchant_category_codes.csv"
+      },
+      {
+        "path": "datas/DABstep数据/merchant_data.json",
+        "type": "json",
+        "env_path": "datasets/merchant_data.json"
+      },
+      {
+        "path": "datas/DABstep数据/payments-readme.md",
+        "type": "md",
+        "env_path": "datasets/payments-readme.md"
+      },
+      {
+        "path": "datas/DABstep数据/payments.csv",
+        "type": "csv",
+        "env_path": "datasets/payments.csv"
+      },
+      {
+        "path": "datas/DABstep数据/readme.md",
+        "type": "md",
+        "env_path": "datasets/readme.md"
+      },
+      {
+        "path": "datas/DABstep数据/subset_notes.md",
+        "type": "md",
+        "env_path": "datasets/subset_notes.md"
+      }
+    ],
+    "skills": [
+      "bank-reconciliation-claw",
+      "data-quality",
+      "fuzzy-match",
+      "norman-monthly-reconciliation",
+      "reconciliation",
+      "reference-data",
+      "statistics-fundamentals"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "Task 1：payments.csv 里 issuing_country 交易数量最多的是哪个国家？请按题目要求只给国家代码。",
+        "score_points": [
+          "Task 1 的最终答案需要为 NL。"
+        ],
+        "related_tables": [
+          "datasets/acquirer_countries.csv",
+          "datasets/fees.json",
+          "datasets/manual.md",
+          "datasets/merchant_category_codes.csv",
+          "datasets/merchant_data.json",
+          "datasets/payments-readme.md",
+          "datasets/payments.csv",
+          "datasets/readme.md",
+          "datasets/subset_notes.md"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "Task 2：按 ip_country 统计欺诈率，四个选项 NL、BE、ES、FR 中最高的是哪个？请按“选项字母. 国家代码”回答。",
+        "score_points": [
+          "Task 2 的最终答案需要为 B. BE。"
+        ],
+        "related_tables": [
+          "datasets/acquirer_countries.csv",
+          "datasets/fees.json",
+          "datasets/manual.md",
+          "datasets/merchant_category_codes.csv",
+          "datasets/merchant_data.json",
+          "datasets/payments-readme.md",
+          "datasets/payments.csv",
+          "datasets/readme.md",
+          "datasets/subset_notes.md"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "Task 3：Martinis_Fine_Steakhouse 是否面临高欺诈率罚金风险？如果题目不适用，请按规则回答 Not Applicable。",
+        "score_points": [
+          "Task 3 的最终答案需要为 Not Applicable。"
+        ],
+        "related_tables": [
+          "datasets/acquirer_countries.csv",
+          "datasets/fees.json",
+          "datasets/manual.md",
+          "datasets/merchant_category_codes.csv",
+          "datasets/merchant_data.json",
+          "datasets/payments-readme.md",
+          "datasets/payments.csv",
+          "datasets/readme.md",
+          "datasets/subset_notes.md"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "Task 4：对 credit 交易，GlobalCard 在交易金额 10 EUR 时的平均手续费是多少？请用 EUR 数值并保留 6 位小数。",
+        "score_points": [
+          "Task 4 的最终答案需要为 0.120132。"
+        ],
+        "related_tables": [
+          "datasets/acquirer_countries.csv",
+          "datasets/fees.json",
+          "datasets/manual.md",
+          "datasets/merchant_category_codes.csv",
+          "datasets/merchant_data.json",
+          "datasets/payments-readme.md",
+          "datasets/payments.csv",
+          "datasets/readme.md",
+          "datasets/subset_notes.md"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "Task 5：account type 为 H、MCC 描述为 Eating Places and Restaurants 时，GlobalCard 对 10 EUR 交易的平均手续费是多少？请保留 6 位小数。",
+        "score_points": [
+          "Task 5 的最终答案需要为 0.123217。"
+        ],
+        "related_tables": [
+          "datasets/acquirer_countries.csv",
+          "datasets/fees.json",
+          "datasets/manual.md",
+          "datasets/merchant_category_codes.csv",
+          "datasets/merchant_data.json",
+          "datasets/payments-readme.md",
+          "datasets/payments.csv",
+          "datasets/readme.md",
+          "datasets/subset_notes.md"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "Task 6：account_type=R 且 aci=B 时适用哪些 fee ID？请用逗号分隔并保持确定性顺序。",
+        "score_points": [
+          "Task 6 的最终答案需要为 1, 2, 5, 6, 8, 9, 10, 12, 14, 15, 20, 21, 22, 23, 25, 30, 34, 35, 36, 39, 45, 48, 49, 50, 51, 55, 56, 57, 58, 62, 65, 68, 69, 71, 78, 82, 83, 86, 87, 89, 90, 91, 95, 96, 98, 100, 101, 103, 107, 108, 110, 112, 113, 114, 115, 116, 119, 122, 127, 129, 132, 133, 134, 138, 139, 143, 146, 147, 150, 152, 154, 155, 157, 158, 160, 161, 165, 166, 171, 174, 176, 178, 180, 184, 187, 190, 191, 195, 197, 199, 202, 205, 213, 214, 215, 219, 220, 223, 226, 227, 229, 231, 234, 235, 236, 239, 240, 244, 250, 251, 256, 262, 263, 265, 272, 273, 274, 276, 278, 282, 283, 285, 286, 289, 290, 293, 296, 302, 303, 304, 306, 307, 309, 310, 314, 317, 320, 322, 328, 329, 332, 338, 341, 344, 345, 346, 349, 351, 352, 355, 360, 362, 364, 365, 366, 367, 368, 369, 372, 375, 379, 384, 390, 391, 392, 393, 394, 395, 397, 398, 401, 402, 404, 405, 406, 407, 410, 419, 421, 426, 430, 431, 432, 433, 434, 440, 442, 443, 445, 446, 447, 449, 451, 453, 454, 457, 461, 463, 471, 474, 475, 477, 480, 482, 483, 487, 490, 491, 497, 503, 504, 505, 506, 507, 508, 509, 511, 512, 518, 521, 523, 524, 527, 533, 537, 539, 545, 547, 549, 550, 552, 555, 556, 558, 560, 563, 564, 565, 568, 570, 571, 573, 574, 575, 576, 583, 584, 587, 589, 590, 591, 592, 594, 597, 600, 601, 602, 603, 609, 610, 611, 613, 615, 618, 619, 621, 622, 626, 629, 630, 636, 638, 640, 644, 645, 651, 654, 661, 666, 667, 669, 675, 679, 682, 683, 684, 685, 689, 692, 694, 695, 697, 698, 707, 708, 709, 710, 711, 713, 716, 717, 718, 722, 723, 725, 729, 731, 734, 735, 736, 739, 740, 743, 746, 749, 750, 754, 755, 757, 759, 767, 769, 772, 775, 776, 778, 779, 785, 786, 792, 793, 796, 797, 799, 800, 804, 805, 806, 812, 813, 817, 818, 820, 823, 826, 827, 828, 831, 832, 835, 837, 839, 842, 844, 855, 856, 857, 858, 862, 864, 865, 866, 867, 869, 871, 874, 875, 876, 883, 889, 891, 893, 895, 897, 898, 901, 903, 910, 913, 915, 918, 919, 920, 927, 929, 930, 931, 938, 939, 940, 942, 943, 950, 952, 953, 956, 960, 961, 964, 967, 968, 970, 973, 974, 975, 978, 979, 981, 986, 989, 990, 991, 992, 998, 999, 1000。"
+        ],
+        "related_tables": [
+          "datasets/acquirer_countries.csv",
+          "datasets/fees.json",
+          "datasets/manual.md",
+          "datasets/merchant_category_codes.csv",
+          "datasets/merchant_data.json",
+          "datasets/payments-readme.md",
+          "datasets/payments.csv",
+          "datasets/readme.md",
+          "datasets/subset_notes.md"
+        ]
+      },
+      {
+        "idx": 6,
+        "question": "Task 7：2023 年第 10 天，Belles_cookbook_store 适用哪些 fee ID？请按题目要求列出。",
+        "score_points": [
+          "Task 7 的最终答案需要为 741, 709, 454, 813, 381, 536, 473, 572, 477, 286。"
+        ],
+        "related_tables": [
+          "datasets/acquirer_countries.csv",
+          "datasets/fees.json",
+          "datasets/manual.md",
+          "datasets/merchant_category_codes.csv",
+          "datasets/merchant_data.json",
+          "datasets/payments-readme.md",
+          "datasets/payments.csv",
+          "datasets/readme.md",
+          "datasets/subset_notes.md"
+        ]
+      },
+      {
+        "idx": 7,
+        "question": "Task 8：2023 年 3 月，Belles_cookbook_store 适用哪些 fee ID？请按题目要求列出。",
+        "score_points": [
+          "Task 8 的最终答案需要为 384, 394, 276, 150, 536, 286, 163, 36, 680, 939, 428, 813, 556, 51, 53, 572, 960, 64, 709, 454, 595, 725, 473, 347, 477, 608, 868, 741, 231, 107, 626, 249, 123, 381。"
+        ],
+        "related_tables": [
+          "datasets/acquirer_countries.csv",
+          "datasets/fees.json",
+          "datasets/manual.md",
+          "datasets/merchant_category_codes.csv",
+          "datasets/merchant_data.json",
+          "datasets/payments-readme.md",
+          "datasets/payments.csv",
+          "datasets/readme.md",
+          "datasets/subset_notes.md"
+        ]
+      },
+      {
+        "idx": 8,
+        "question": "Task 9：2023 年 1 月，如果 ID=384 的 relative fee 改为 1，Belles_cookbook_store 的成本差额是多少？请保留 14 位小数。",
+        "score_points": [
+          "Task 9 的最终答案需要为 -0.94810300000017。"
+        ],
+        "related_tables": [
+          "datasets/acquirer_countries.csv",
+          "datasets/fees.json",
+          "datasets/manual.md",
+          "datasets/merchant_category_codes.csv",
+          "datasets/merchant_data.json",
+          "datasets/payments-readme.md",
+          "datasets/payments.csv",
+          "datasets/readme.md",
+          "datasets/subset_notes.md"
+        ]
+      },
+      {
+        "idx": 9,
+        "question": "Task 10：Belles_cookbook_store 1 月的欺诈交易如果引导到其他 ACI，最低费用对应的选择是什么？请用“ACI:费用”格式回答。",
+        "score_points": [
+          "Task 10 的最终答案需要为 E:13.57。"
+        ],
+        "related_tables": [
+          "datasets/acquirer_countries.csv",
+          "datasets/fees.json",
+          "datasets/manual.md",
+          "datasets/merchant_category_codes.csv",
+          "datasets/merchant_data.json",
+          "datasets/payments-readme.md",
+          "datasets/payments.csv",
+          "datasets/readme.md",
+          "datasets/subset_notes.md"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_xlsx_auto_sales_repair",
+    "source": "skill_benchmark",
+    "difficulty": "medium",
+    "instruction": "任务背景：你是 Excel 表格修复助手，需要检查 auto_sales_repair.xlsx 中被挖空或异常的单元格，并根据销售明细、门店汇总、车型汇总之间的求和和交叉校验关系推断正确值。每轮聚焦一个单元格，请直接返回应填值和依据，不需要写回 xlsx 文件。",
+    "data_assets": [
+      {
+        "path": "datas/xlsx表格修复/auto_sales_repair/auto_sales_repair.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/auto_sales_repair.xlsx"
+      }
+    ],
+    "skills": [
+      "data-reconciliation",
+      "xlsx"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "我怀疑 auto_sales_repair.xlsx 里的 C3 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用销售明细、门店汇总或车型汇总之间的校验关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“销售明细”工作表。",
+          "答案需要指出 C3 应修复为 20。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“门店A-雅阁汇总 142 扣除其余三位顾问销量 43/49/30”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/auto_sales_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "我怀疑 auto_sales_repair.xlsx 里的 H9 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用销售明细、门店汇总或车型汇总之间的校验关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“销售明细”工作表。",
+          "答案需要指出 H9 应修复为 38。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“门店B-飞度汇总 126 扣除其余三位顾问销量 43/23/22”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/auto_sales_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "我怀疑 auto_sales_repair.xlsx 里的 J6 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用销售明细、门店汇总或车型汇总之间的校验关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“销售明细”工作表。",
+          "答案需要指出 J6 应修复为 199。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“行合计 = C6:I6 求和”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/auto_sales_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "我怀疑 auto_sales_repair.xlsx 里的 I3 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用销售明细、门店汇总或车型汇总之间的校验关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“门店汇总”工作表。",
+          "答案需要指出 I3 应修复为 692。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“门店A 合计 = B3:H3 求和，或明细行合计相加”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/auto_sales_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "我怀疑 auto_sales_repair.xlsx 里的 C4 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用销售明细、门店汇总或车型汇总之间的校验关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“门店汇总”工作表。",
+          "答案需要指出 C4 应修复为 115。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“门店B 皓影销量 = 对应 4 行明细求和”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/auto_sales_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "我怀疑 auto_sales_repair.xlsx 里的 B8 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用销售明细、门店汇总或车型汇总之间的校验关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“车型汇总”工作表。",
+          "答案需要指出 B8 应修复为 289。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“飞度总销量 = 全部门店对应车型求和”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/auto_sales_repair.xlsx"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_xlsx_renovation_quote_repair",
+    "source": "skill_benchmark",
+    "difficulty": "medium",
+    "instruction": "任务背景：你是 Excel 报价单修复助手，需要检查 renovation_quote_repair.xlsx 中被挖空或异常的单元格，并根据工程量、单价、分项小计和总计之间的公式关系推断正确值。每轮聚焦一个单元格，请直接返回应填值和依据，不需要写回 xlsx 文件。",
+    "data_assets": [
+      {
+        "path": "datas/xlsx表格修复/renovation_quote_repair/renovation_quote_repair.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/renovation_quote_repair.xlsx"
+      }
+    ],
+    "skills": [
+      "data-reconciliation",
+      "xlsx"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "我怀疑 renovation_quote_repair.xlsx 里的 I3 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用工程量、单价、合价或总计之间的公式关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“装修报价”工作表。",
+          "答案需要指出 I3 应修复为 8。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“单价 = 辅材 + 人工费 + 主材”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/renovation_quote_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "我怀疑 renovation_quote_repair.xlsx 里的 J4 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用工程量、单价、合价或总计之间的公式关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“装修报价”工作表。",
+          "答案需要指出 J4 应修复为 8513.4。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“合价 = 工程量 × 单价”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/renovation_quote_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "我怀疑 renovation_quote_repair.xlsx 里的 E12 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用工程量、单价、合价或总计之间的公式关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“装修报价”工作表。",
+          "答案需要指出 E12 应修复为 65。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“辅材 = 单价 - 人工费 - 主材”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/renovation_quote_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "我怀疑 renovation_quote_repair.xlsx 里的 D17 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用工程量、单价、合价或总计之间的公式关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“装修报价”工作表。",
+          "答案需要指出 D17 应修复为 31。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“工程量 = 合价 ÷ 单价”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/renovation_quote_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "我怀疑 renovation_quote_repair.xlsx 里的 I31 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用工程量、单价、合价或总计之间的公式关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“装修报价”工作表。",
+          "答案需要指出 I31 应修复为 450。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“单价 = 辅材 + 人工费 + 主材”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/renovation_quote_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "我怀疑 renovation_quote_repair.xlsx 里的 J79 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用工程量、单价、合价或总计之间的公式关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“装修报价”工作表。",
+          "答案需要指出 J79 应修复为 710910.72。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“总价 = J2:J78 求和”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/renovation_quote_repair.xlsx"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_xlsx_shipping_detail_repair",
+    "source": "skill_benchmark",
+    "difficulty": "medium",
+    "instruction": "任务背景：你是 Excel 发货明细修复助手，需要检查 shipping_detail_repair.xlsx 中被挖空或异常的单元格，并根据发货明细、区县汇总和金额/数量/单价关系推断正确值。每轮聚焦一个单元格，请直接返回应填值和依据，不需要写回 xlsx 文件。",
+    "data_assets": [
+      {
+        "path": "datas/xlsx表格修复/shipping_detail_repair/shipping_detail_repair.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/shipping_detail_repair.xlsx"
+      }
+    ],
+    "skills": [
+      "data-reconciliation",
+      "xlsx"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "我怀疑 shipping_detail_repair.xlsx 里的 H6 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用数量、单价、总价和区县汇总之间的校验关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“发货明细”工作表。",
+          "答案需要指出 H6 应修复为 17.5。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“单价 = 总价 ÷ 数量”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/shipping_detail_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "我怀疑 shipping_detail_repair.xlsx 里的 J13 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用数量、单价、总价和区县汇总之间的校验关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“发货明细”工作表。",
+          "答案需要指出 J13 应修复为 4720。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“金额 = I13 + I14 + I15”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/shipping_detail_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "我怀疑 shipping_detail_repair.xlsx 里的 J16 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用数量、单价、总价和区县汇总之间的校验关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“发货明细”工作表。",
+          "答案需要指出 J16 应修复为 174000。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“金额 = I16 + I17”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/shipping_detail_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "我怀疑 shipping_detail_repair.xlsx 里的 E4 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用数量、单价、总价和区县汇总之间的校验关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“区县汇总”工作表。",
+          "答案需要指出 E4 应修复为 5250。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“总价 = 数量 × 单价”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/shipping_detail_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "我怀疑 shipping_detail_repair.xlsx 里的 C10 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用数量、单价、总价和区县汇总之间的校验关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“区县汇总”工作表。",
+          "答案需要指出 C10 应修复为 2650。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“汇总数量 = C4 + F4 + I4 + L4 + O4”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/shipping_detail_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "我怀疑 shipping_detail_repair.xlsx 里的 D13 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用数量、单价、总价和区县汇总之间的校验关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“区县汇总”工作表。",
+          "答案需要指出 D13 应修复为 86075。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“总计金额 = D10 + D11 + D12”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/shipping_detail_repair.xlsx"
+        ]
+      }
+    ]
+  },
+  {
+    "task_id": "task_xlsx_transport_budget_repair",
+    "source": "skill_benchmark",
+    "difficulty": "medium",
+    "instruction": "任务背景：你是 Excel 运输预算修复助手，需要检查 transport_budget_repair.xlsx 中被挖空或异常的单元格，并根据月度/年度换算、分项费用和区块总计之间的公式关系推断正确值。每轮聚焦一个单元格，请直接返回应填值和依据，不需要写回 xlsx 文件。",
+    "data_assets": [
+      {
+        "path": "datas/xlsx表格修复/transport_budget_repair/transport_budget_repair.xlsx",
+        "type": "xlsx",
+        "env_path": "datasets/transport_budget_repair.xlsx"
+      }
+    ],
+    "skills": [
+      "data-reconciliation",
+      "xlsx"
+    ],
+    "turns": [
+      {
+        "idx": 0,
+        "question": "我怀疑 transport_budget_repair.xlsx 里的 B5 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用月度/年度换算、分项费用或区块总计之间的公式关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“预算测算”工作表。",
+          "答案需要指出 B5 应修复为 1000。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“旺季月产能 = 月数/26，或由合计 1800 - 淡季 800 反推”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/transport_budget_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 1,
+        "question": "我怀疑 transport_budget_repair.xlsx 里的 F4 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用月度/年度换算、分项费用或区块总计之间的公式关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“预算测算”工作表。",
+          "答案需要指出 F4 应修复为 3296.97。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“日需求费用 = 日运转次数 × 680”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/transport_budget_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 2,
+        "question": "我怀疑 transport_budget_repair.xlsx 里的 H5 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用月度/年度换算、分项费用或区块总计之间的公式关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“预算测算”工作表。",
+          "答案需要指出 H5 应修复为 750060.61。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“旺季年综合费用 = 月费用 × 7”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/transport_budget_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 3,
+        "question": "我怀疑 transport_budget_repair.xlsx 里的 F9 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用月度/年度换算、分项费用或区块总计之间的公式关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“预算测算”工作表。",
+          "答案需要指出 F9 应修复为 686598。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“购车费用合计 = A9:E9 求和”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/transport_budget_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 4,
+        "question": "我怀疑 transport_budget_repair.xlsx 里的 D13 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用月度/年度换算、分项费用或区块总计之间的公式关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“预算测算”工作表。",
+          "答案需要指出 D13 应修复为 806。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“月累计公里数 = 费用 ÷ 油费单价”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/transport_budget_repair.xlsx"
+        ]
+      },
+      {
+        "idx": 5,
+        "question": "我怀疑 transport_budget_repair.xlsx 里的 F13 有问题。请直接告诉我它所在的工作表、应该填入的数值，并用月度/年度换算、分项费用或区块总计之间的公式关系说明理由；不用修改或另存工作簿。",
+        "score_points": [
+          "答案需要指出目标单元格位于“预算测算”工作表。",
+          "答案需要指出 F13 应修复为 2418。",
+          "数值结果允许 0.01 以内的微小误差。",
+          "修复说明需要覆盖“费用 = 月累计公里数 × 油费单价”这一校验关系。"
+        ],
+        "related_tables": [
+          "datasets/transport_budget_repair.xlsx"
+        ]
+      }
+    ]
+  }
+]

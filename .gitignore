@@ -1,0 +1,66 @@
+﻿.venv/
+.env
+.env.*
+.nanobot/config.json
+__pycache__/
+*.pyc
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+nanobot/
+
+# benchmark workspace: keep only trajectories and persisted tool results
+runs/**/workspace/**
+!runs/**/workspace/
+!runs/**/workspace/sessions/
+!runs/**/workspace/sessions/**
+!runs/**/workspace/.nanobot/
+!runs/**/workspace/.nanobot/tool-results/
+!runs/**/workspace/.nanobot/tool-results/**
+
+# ignore isolated run workspaces; traces are copied to runs/session_traces
+runs/**/workspace/
+
+# ignore unused bundled skills for this benchmark overlay
+datasets/skills/docx/
+datasets/skills/pptx/
+datasets/skills/investoday-*/
+
+# ignore obsolete gaokao first run
+runs/task_gaokao_shandong_2025_recommendation/skill_off/exp_first5_force_skill/
+runs/task_gaokao_shandong_2025_recommendation/skill_on/exp_first5_force_skill/
+runs/session_traces/task_gaokao_shandong_2025_recommendation/skill_off/exp_first5_force_skill/
+runs/session_traces/task_gaokao_shandong_2025_recommendation/skill_on/exp_first5_force_skill/
+
+# ignore unused dataset assets
+datasets/datas/DABstep数据/
+datasets/datas/xlsx表格修复/
+datasets/datas/上市公司财务报表/
+datasets/datas/企业流水对账/
+datasets/datas/医疗诊断/
+datasets/datas/发票对账/
+datasets/datas/在线零售/
+datasets/datas/文件整理/
+datasets/datas/银行流水对账/
+
+# ignore unused dataset skills
+datasets/skills/bank-reconciliation-claw/
+datasets/skills/data-quality/
+datasets/skills/data-reconciliation/
+datasets/skills/file-organizer/
+datasets/skills/fuzzy-match/
+datasets/skills/medical-terms/
+datasets/skills/medication-reconciliation/
+datasets/skills/norman-monthly-reconciliation/
+datasets/skills/novelty-report-review/
+datasets/skills/pdf/
+datasets/skills/planning-with-files/
+datasets/skills/reconciliation/
+datasets/skills/reference-data/
+datasets/skills/retail-metric-playbook/
+datasets/skills/retail-return-reconciliation/
+datasets/skills/retail-rfm-segmentation/
+datasets/skills/statistics-fundamentals/
+datasets/skills/xlsx/

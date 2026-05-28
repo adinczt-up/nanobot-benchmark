@@ -1,0 +1,285 @@
+{
+  "providers": {
+    "custom": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "azureOpenai": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "bedrock": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null,
+      "region": null,
+      "profile": null
+    },
+    "anthropic": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "openai": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "openrouter": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "huggingface": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "deepseek": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "groq": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "zhipu": {
+      "apiKey": "${BIGMODEL_API_KEY}",
+      "apiBase": "https://open.bigmodel.cn/api/paas/v4",
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "dashscope": {
+      "apiKey": "${BIGMODEL_API_KEY}",
+      "apiBase": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "vllm": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "ollama": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "lmStudio": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "ovms": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "gemini": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "moonshot": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "minimax": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "minimaxAnthropic": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "mistral": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "stepfun": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "xiaomiMimo": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "longcat": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "aihubmix": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "siliconflow": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "volcengine": {
+      "apiKey": "${BIGMODEL_API_KEY}",
+      "apiBase": "https://ark.cn-beijing.volces.com/api/v3",
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "volcengineCodingPlan": {
+      "apiKey": "${BIGMODEL_API_KEY}",
+      "apiBase": "https://ark.cn-beijing.volces.com/api/coding/v3",
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "byteplus": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "byteplusCodingPlan": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "qianfan": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    },
+    "nvidia": {
+      "apiKey": null,
+      "apiBase": null,
+      "extraHeaders": null,
+      "extraBody": null
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": "glm-5.1",
+      "provider": "zhipu",
+      "maxTokens": 8192,
+      "contextWindowTokens": 65536,
+      "contextBlockLimit": null,
+      "temperature": 0.1,
+      "maxToolIterations": 30,
+      "maxConcurrentSubagents": 1,
+      "maxToolResultChars": 16000,
+      "providerRetryMode": "standard",
+      "toolHintMaxLength": 40,
+      "reasoningEffort": null,
+      "botName": "nanobot",
+      "botIcon": "🐈",
+      "workspace": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_sales_performance\\skill_on\\exp_first5_force_skill\\workspace",
+      "timezone": "Asia/Shanghai",
+      "unifiedSession": false,
+      "idleCompactAfterMinutes": 0,
+      "maxMessages": 200,
+      "disabledSkills": [
+        "afrexai-construction-estimator",
+        "bank-reconciliation-claw",
+        "clawhub",
+        "cron",
+        "data-quality",
+        "data-reconciliation",
+        "docx",
+        "file-organizer",
+        "fuzzy-match",
+        "gaokao-advisor",
+        "github",
+        "image-generation",
+        "investoday-finance-data",
+        "investoday-fund-comprehensive-diagnosis",
+        "investoday-fund-performance-attribution-analysis",
+        "investoday-hotspot-event-decoding",
+        "investoday-stock-anomaly-analysis",
+        "investoday-stock-financial-analysis",
+        "investoday-stock-news-event-analysis",
+        "investoday-stock-research-interpretation",
+        "investoday-stock-technical-analysis",
+        "investoday-stock-valuation-analysis",
+        "medical-terms",
+        "medication-reconciliation",
+        "memory",
+        "my",
+        "norman-monthly-reconciliation",
+        "novelty-report-review",
+        "pdf",
+        "planning-with-files",
+        "pptx",
+        "reconciliation",
+        "reference-data",
+        "retail-metric-playbook",
+        "retail-return-reconciliation",
+        "retail-rfm-segmentation",
+        "skill-creator",
+        "statistics-fundamentals",
+        "summarize",
+        "tmux",
+        "update-setup",
+        "weather",
+        "xlsx"
+      ],
+      "dream": {
+        "intervalH": 999999,
+        "maxBatchSize": 1,
+        "maxIterations": 1,
+        "annotateLineAges": false
+      }
+    }
+  },
+  "channels": {
+    "sendProgress": false,
+    "sendToolHints": false,
+    "sendMaxRetries": 1
+  },
+  "tools": {
+    "restrictToWorkspace": true,
+    "web": {
+      "enable": false
+    },
+    "my": {
+      "enable": false,
+      "allowSet": false
+    },
+    "imageGeneration": {
+      "enabled": false
+    },
+    "mcpServers": {}
+  }
+}

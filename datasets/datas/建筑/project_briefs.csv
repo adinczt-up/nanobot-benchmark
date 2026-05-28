@@ -1,0 +1,7 @@
+﻿"project_id","project_name","project_type","delivery_method","city","region","scope_description","gross_area","site_area","duration_months","estimate_type","base_date","escalation_rate","location_factor","assumptions","exclusions"
+"PRJ-001","临港市政道路改造","infrastructure","design-bid-build","上海","Shanghai, China","道路开挖、外运、回填与路基恢复。","","18500","9","definitive","2026-05-22","0.035","1.00","交通导改已落实，土方外运通道可用。","不含永久绿化及交通信号深化。"
+"PRJ-002","园区土方与回填平衡","infrastructure","design-build","上海","Shanghai, China","园区场地平整、土方平衡与局部软基处理。","","9200","7","detailed","2026-05-22","0.032","1.00","地勘完成，地下障碍点位已标识。","不含场内永久道路面层。"
+"PRJ-003","河道泵站基坑开挖","infrastructure","CM-at-risk","上海","Shanghai, China","泵站基坑开挖、弃土运输与回填压实。","","4300","8","detailed","2026-05-22","0.034","1.00","围护已另行发包，本场景仅覆盖土方专业。","不含主体结构与机电安装。"
+"PRJ-004","仓储园区场地平整","industrial","design-bid-build","上海","Shanghai, China","既有仓储园区场地清表、平整与回填。","","6800","6","conceptual","2026-05-22","0.030","1.00","白天施工，场地交接清晰。","不含围墙、门禁和建筑单体工程。"
+"PRJ-005","学校操场及排水修复","public_works","CM-at-risk","上海","Shanghai, China","操场土方整治、沟槽开挖与雨水排水修复。","","5100","8","detailed","2026-05-22","0.033","1.00","暑期为主施工窗口，需控制噪声。","不含塑胶面层及景观深化。"
+"PRJ-006","工业厂区雨污整治","industrial","design-build","上海","Shanghai, China","雨污分流改造配套土方与场地恢复。","","14300","10","detailed","2026-05-22","0.033","1.00","施工便道与弃土堆场已落实。","不含工艺设备基础和永久机电。"

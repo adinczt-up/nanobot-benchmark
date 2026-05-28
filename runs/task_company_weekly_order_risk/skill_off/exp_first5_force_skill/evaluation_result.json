@@ -1,0 +1,326 @@
+{
+  "task_id": "task_company_weekly_order_risk",
+  "judge": "llm",
+  "judge_model": "glm-5.1",
+  "score": 5.0,
+  "max_score": 20.0,
+  "accuracy": 0.25,
+  "turns": [
+    {
+      "idx": 0,
+      "question": "这份订单风险周报先把本周口径定下来：请说明当前周覆盖的日期范围，并简要说明它来自 order_status_2005_may.csv 的哪段订单数据。",
+      "score": 0.0,
+      "max_score": 1.0,
+      "accuracy": 0.0,
+      "response_present": true,
+      "judge": "llm",
+      "judge_model": "glm-5.1",
+      "turn_summary": "模型未能正确指出当前周的日期范围，与标准答案不符。",
+      "points": [
+        {
+          "score_point": "答案需要说明当前周期为 2005-05-08 至 2005-05-14。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "当前周期为2005-05-08至2005-05-14"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "模型回答的当前周日期范围为2005-05-17至2005-05-31，与score_point要求的2005-05-08至2005-05-14不符。",
+          "judge_index": 1
+        }
+      ]
+    },
+    {
+      "idx": 1,
+      "question": "为了做环比，请再确认上一周的日期范围，口径要和当前周一致。",
+      "score": 0.0,
+      "max_score": 1.0,
+      "accuracy": 0.0,
+      "response_present": true,
+      "judge": "llm",
+      "judge_model": "glm-5.1",
+      "turn_summary": "模型给出的上一周日期范围与评分点要求不一致，未通过。",
+      "points": [
+        {
+          "score_point": "答案需要说明上一周期为 2005-05-01 至 2005-05-07。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "上一周期为 2005-05-01 至 2005-05-07"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "模型回答的上一周日期范围为5月1日至5月13日，未满足score point明确要求的5月1日至5月7日。",
+          "judge_index": 1
+        }
+      ]
+    },
+    {
+      "idx": 2,
+      "question": "请把本周订单风险看板算出来：销售额环比、订单行和订单数、Disputed/Shipped 金额，以及最突出的产品线、国家和客户暴露都要带上。",
+      "score": 0.0,
+      "max_score": 12.0,
+      "accuracy": 0.0,
+      "response_present": true,
+      "judge": "llm",
+      "judge_model": "glm-5.1",
+      "turn_summary": "模型回答的所有关键指标数值均与评分点要求不符，计算逻辑或数据筛选存在严重偏差，全数未通过。",
+      "points": [
+        {
+          "score_point": "本周总销售额需要为 87709.93。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "本周总销售额需要为 87709.93，模型回答为 204,205"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "本周总销售额数值错误",
+          "judge_index": 1
+        },
+        {
+          "score_point": "上一周总销售额需要为 165946.07。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "上一周总销售额需要为 165946.07，模型回答为 253,656"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "上一周总销售额数值错误",
+          "judge_index": 2
+        },
+        {
+          "score_point": "销售额环比变化率需要为 -47.15。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "销售额环比变化率需要为 -47.15，模型回答为 -19.5%"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "销售额环比变化率数值错误",
+          "judge_index": 3
+        },
+        {
+          "score_point": "本周订单行数需要为 25。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "本周订单行数需要为 25，模型回答为 55"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "本周订单行数数值错误",
+          "judge_index": 4
+        },
+        {
+          "score_point": "本周唯一订单数需要为 3。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "本周唯一订单数需要为 3，模型回答为 7"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "本周唯一订单数数值错误",
+          "judge_index": 5
+        },
+        {
+          "score_point": "Disputed 状态订单行数需要对应 Disputed，数值为 11。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "Disputed状态订单行数需要为 11，模型未提供该数据"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "Disputed状态订单行数缺失或错误",
+          "judge_index": 6
+        },
+        {
+          "score_point": "Disputed 状态销售额需要对应 Disputed，数值为 46199.99。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "Disputed状态销售额需要为 46199.99，模型回答为 46,200"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "Disputed状态销售额数值错误",
+          "judge_index": 7
+        },
+        {
+          "score_point": "Shipped 状态销售额需要对应 Shipped，数值为 41509.94。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "Shipped状态销售额需要为 41509.94，模型回答为 59,475 或 159,139"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "Shipped状态销售额数值错误",
+          "judge_index": 8
+        },
+        {
+          "score_point": "销售额最高产品线需要对应 Motorcycles，数值为 39389.7。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "销售额最高产品线需为 Motorcycles (39389.7)，模型回答为 Classic Cars"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "销售额最高产品线及数值错误",
+          "judge_index": 9
+        },
+        {
+          "score_point": "销售额最高国家需要对应 Italy，数值为 41509.94。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "销售额最高国家需为 Italy (41509.94)，模型回答为 Austria"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "销售额最高国家及数值错误",
+          "judge_index": 10
+        },
+        {
+          "score_point": "主要风险客户需要对应 Euro Shopping Channel，数值为 31821.9。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "主要风险客户 Euro Shopping Channel 数值需为 31821.9，模型回答为 31,822"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "主要风险客户数值错误",
+          "judge_index": 11
+        },
+        {
+          "score_point": "亚太风险客户需要对应 Australian Collectables，数值为 14378.09。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "亚太风险客户 Australian Collectables 数值需为 14378.09，模型回答为 14,378"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "亚太风险客户数值错误",
+          "judge_index": 12
+        }
+      ]
+    },
+    {
+      "idx": 3,
+      "question": "最后帮我列一组周报摘要里应该重点点名的风险关键词或业务实体，方便管理层一眼看到问题。",
+      "score": 5.0,
+      "max_score": 6.0,
+      "accuracy": 0.8333333333333334,
+      "response_present": true,
+      "judge": "llm",
+      "judge_model": "glm-5.1",
+      "turn_summary": "模型回答包含了大部分要求的风险关键词和实体，但遗漏了 Italy",
+      "points": [
+        {
+          "score_point": "重点词或实体清单需要包含 Disputed。",
+          "score": 1.0,
+          "max_score": 1.0,
+          "passed": true,
+          "matched": [
+            "Disputed 遗留 46,200"
+          ],
+          "missing": [],
+          "note": "llm_judge",
+          "judge_reason": "回答中包含了 Disputed",
+          "judge_index": 1
+        },
+        {
+          "score_point": "重点词或实体清单需要包含 Euro Shopping Channel。",
+          "score": 1.0,
+          "max_score": 1.0,
+          "passed": true,
+          "matched": [
+            "Euro Shopping Channel"
+          ],
+          "missing": [],
+          "note": "llm_judge",
+          "judge_reason": "回答中包含了 Euro Shopping Channel",
+          "judge_index": 2
+        },
+        {
+          "score_point": "重点词或实体清单需要包含 Australian Collectables。",
+          "score": 1.0,
+          "max_score": 1.0,
+          "passed": true,
+          "matched": [
+            "Australian Collectables, Ltd"
+          ],
+          "missing": [],
+          "note": "llm_judge",
+          "judge_reason": "回答中包含了 Australian Collectables",
+          "judge_index": 3
+        },
+        {
+          "score_point": "重点词或实体清单需要包含 Motorcycles。",
+          "score": 1.0,
+          "max_score": 1.0,
+          "passed": true,
+          "matched": [
+            "Motorcycles / Planes / Ships / Trains"
+          ],
+          "missing": [],
+          "note": "llm_judge",
+          "judge_reason": "回答中包含了 Motorcycles",
+          "judge_index": 4
+        },
+        {
+          "score_point": "重点词或实体清单需要包含 Italy。",
+          "score": 0.0,
+          "max_score": 1.0,
+          "passed": false,
+          "matched": [],
+          "missing": [
+            "Italy"
+          ],
+          "note": "llm_judge",
+          "judge_reason": "回答中未包含 Italy",
+          "judge_index": 5
+        },
+        {
+          "score_point": "重点词或实体清单需要包含 Spain。",
+          "score": 1.0,
+          "max_score": 1.0,
+          "passed": true,
+          "matched": [
+            "Spain"
+          ],
+          "missing": [],
+          "note": "llm_judge",
+          "judge_reason": "回答中包含了 Spain",
+          "judge_index": 6
+        }
+      ]
+    }
+  ],
+  "run_root": "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_order_risk\\skill_off\\exp_first5_force_skill",
+  "skill_mode": "off",
+  "run_id": "exp_first5_force_skill",
+  "outputs_count": 4
+}

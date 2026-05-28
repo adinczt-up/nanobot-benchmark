@@ -1,0 +1,13 @@
+{
+  "skill_mode": "off",
+  "skill_policy": "off",
+  "allowed_skills": [],
+  "description_only_skills": false,
+  "system_prompt_loaded": false,
+  "description_preloaded": false,
+  "description_presented": false,
+  "skills": {},
+  "session_files": [
+    "C:\\Users\\Adin\\Desktop\\nanobot\\nanobot-main\\runs\\task_company_weekly_sales_performance\\skill_off\\exp_first5_force_skill\\workspace\\sessions\\bench_task_company_weekly_sales_performance_off_exp_first5_force_skill.jsonl"
+  ]
+}
