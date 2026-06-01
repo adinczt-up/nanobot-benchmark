@@ -17,6 +17,7 @@ import asyncio
 import json
 import os
 import re
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -66,6 +67,8 @@ def safe_name(value: str) -> str:
 
 def load_tasks(task_json: Path) -> list[dict[str, Any]]:
     tasks = load_json(task_json)
+    if isinstance(tasks, dict):
+        return [tasks]
     if not isinstance(tasks, list) or not tasks:
         raise ValueError(f"No tasks found in {task_json}")
     valid_tasks = [task for task in tasks if isinstance(task, dict)]
@@ -606,6 +609,7 @@ def evaluate(task: dict[str, Any], outputs: dict[int, str]) -> dict[str, Any]:
                 "max_score": turn_max,
                 "accuracy": turn_score / turn_max if turn_max else 0.0,
                 "response_present": bool(response_text.strip()),
+                "model_output": response_text,
                 "points": point_results,
             }
         )
@@ -873,6 +877,7 @@ async def evaluate_llm_async(
                     "max_score": turn_max,
                     "accuracy": turn_score / turn_max if turn_max else 0.0,
                     "response_present": bool(response_text.strip()),
+                    "model_output": response_text,
                     "judge": "llm",
                     "judge_model": model,
                     "turn_summary": turn_note,
@@ -935,6 +940,14 @@ def make_markdown_report(result: dict[str, Any]) -> str:
                 "",
                 f"- Score: {turn['score']:.2f} / {turn['max_score']:.2f}",
                 f"- Accuracy: {turn['accuracy']:.2%}",
+                "",
+                "<details><summary>Model output evaluated for this turn</summary>",
+                "",
+                "````markdown",
+                str(turn.get("model_output", "")),
+                "````",
+                "",
+                "</details>",
                 "",
             ]
         )
@@ -1024,7 +1037,88 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--judge-timeout", type=int, default=180, help="Maximum seconds for each LLM judge turn.")
     parser.add_argument("--rule-fallback", action="store_true", help="Use generic rule fallback if LLM judging fails.")
     parser.add_argument("--no-rule-fallback", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument(
+        "--concurrency",
+        type=int,
+        default=1,
+        help="Number of independent run roots to evaluate in parallel. Turns inside one run remain sequential.",
+    )
     return parser.parse_args()
+
+
+def evaluate_run_target(
+    *,
+    run_root: Path,
+    task: dict[str, Any],
+    metadata: dict[str, Any],
+    args: argparse.Namespace,
+    multiple: bool,
+    fallback_rule: bool,
+) -> dict[str, Any]:
+    outputs = load_turn_outputs(run_root)
+    print(f"[evaluate] {task.get('task_id')} at {run_root}", flush=True)
+    if args.judge == "rule":
+        result = evaluate(task, outputs)
+        result["judge"] = "rule"
+    else:
+        judge_config = (
+            Path(args.judge_config).expanduser().resolve()
+            if args.judge_config
+            else run_root / "config.json"
+        )
+        if not judge_config.is_file():
+            raise FileNotFoundError(f"Judge config not found: {judge_config}")
+        result = evaluate_llm(
+            task=task,
+            outputs=outputs,
+            config_path=judge_config,
+            judge_model=args.judge_model,
+            judge_provider=args.judge_provider,
+            max_tokens=args.judge_max_tokens,
+            temperature=args.judge_temperature,
+            judge_timeout=args.judge_timeout,
+            fallback_rule=fallback_rule,
+        )
+
+    result["run_root"] = str(run_root)
+    result["skill_mode"] = metadata.get("skill_mode") or infer_skill_mode_from_run_root(run_root)
+    result["run_id"] = metadata.get("run_id") or run_root.name
+    result["outputs_count"] = len(outputs)
+
+    output_json = (
+        Path(args.output_json).expanduser().resolve()
+        if args.output_json and not multiple
+        else run_root / "evaluation_result.json"
+    )
+    output_md = (
+        Path(args.output_md).expanduser().resolve()
+        if args.output_md and not multiple
+        else run_root / "evaluation_report.md"
+    )
+    write_json(output_json, result)
+    write_text(output_md, make_markdown_report(result))
+
+    item = {
+        "task_id": result.get("task_id"),
+        "run_root": str(run_root),
+        "skill_mode": result.get("skill_mode"),
+        "run_id": result.get("run_id"),
+        "judge": result.get("judge"),
+        "judge_model": result.get("judge_model"),
+        "score": float(result.get("score", 0.0)),
+        "max_score": float(result.get("max_score", 0.0)),
+        "accuracy": float(result.get("accuracy", 0.0)),
+        "evaluation_result_json": str(output_json),
+        "evaluation_report_md": str(output_md),
+    }
+    print(
+        f"[score] {item['task_id']} {item['skill_mode']} {item['run_id']}: "
+        f"{item['score']:.2f}/{item['max_score']:.2f} ({item['accuracy']:.2%})",
+        flush=True,
+    )
+    print(f"[wrote] {output_json}", flush=True)
+    print(f"[wrote] {output_md}", flush=True)
+    return item
 
 
 def main() -> int:
@@ -1076,73 +1170,66 @@ def main() -> int:
     summary_items: list[dict[str, Any]] = []
     total_score = 0.0
     max_score = 0.0
+    concurrency = max(1, int(args.concurrency))
 
-    for run_root, task, metadata in eval_targets:
-        outputs = load_turn_outputs(run_root)
-        print(f"[evaluate] {task.get('task_id')} at {run_root}", flush=True)
-        if args.judge == "rule":
-            result = evaluate(task, outputs)
-            result["judge"] = "rule"
-        else:
-            judge_config = (
-                Path(args.judge_config).expanduser().resolve()
-                if args.judge_config
-                else run_root / "config.json"
-            )
-            if not judge_config.is_file():
-                raise FileNotFoundError(f"Judge config not found: {judge_config}")
-            result = evaluate_llm(
-                task=task,
-                outputs=outputs,
-                config_path=judge_config,
-                judge_model=args.judge_model,
-                judge_provider=args.judge_provider,
-                max_tokens=args.judge_max_tokens,
-                temperature=args.judge_temperature,
-                judge_timeout=args.judge_timeout,
-                fallback_rule=fallback_rule,
-            )
-
-        result["run_root"] = str(run_root)
-        result["skill_mode"] = metadata.get("skill_mode") or infer_skill_mode_from_run_root(run_root)
-        result["run_id"] = metadata.get("run_id") or run_root.name
-        result["outputs_count"] = len(outputs)
-
-        output_json = (
-            Path(args.output_json).expanduser().resolve()
-            if args.output_json and not multiple
-            else run_root / "evaluation_result.json"
-        )
-        output_md = (
-            Path(args.output_md).expanduser().resolve()
-            if args.output_md and not multiple
-            else run_root / "evaluation_report.md"
-        )
-        write_json(output_json, result)
-        write_text(output_md, make_markdown_report(result))
-
-        item = {
-            "task_id": result.get("task_id"),
-            "run_root": str(run_root),
-            "skill_mode": result.get("skill_mode"),
-            "run_id": result.get("run_id"),
-            "judge": result.get("judge"),
-            "judge_model": result.get("judge_model"),
-            "score": float(result.get("score", 0.0)),
-            "max_score": float(result.get("max_score", 0.0)),
-            "accuracy": float(result.get("accuracy", 0.0)),
-            "evaluation_result_json": str(output_json),
-            "evaluation_report_md": str(output_md),
-        }
+    def add_summary_item(item: dict[str, Any]) -> None:
+        nonlocal total_score, max_score
         summary_items.append(item)
         total_score += item["score"]
         max_score += item["max_score"]
-        print(
-            f"[score] {item['task_id']} {item['skill_mode']} {item['run_id']}: "
-            f"{item['score']:.2f}/{item['max_score']:.2f} ({item['accuracy']:.2%})"
+
+    if concurrency == 1:
+        for run_root, task, metadata in eval_targets:
+            item = evaluate_run_target(
+                run_root=run_root,
+                task=task,
+                metadata=metadata,
+                args=args,
+                multiple=multiple,
+                fallback_rule=fallback_rule,
+            )
+            add_summary_item(item)
+    else:
+        print(f"[parallel] evaluating up to {concurrency} independent run(s) at a time", flush=True)
+        target_iter = iter(eval_targets)
+        active: dict[Any, tuple[Path, dict[str, Any], dict[str, Any]]] = {}
+        with ThreadPoolExecutor(max_workers=concurrency) as executor:
+            def submit_next() -> bool:
+                try:
+                    run_root, task, metadata = next(target_iter)
+                except StopIteration:
+                    return False
+                future = executor.submit(
+                    evaluate_run_target,
+                    run_root=run_root,
+                    task=task,
+                    metadata=metadata,
+                    args=args,
+                    multiple=multiple,
+                    fallback_rule=fallback_rule,
+                )
+                active[future] = (run_root, task, metadata)
+                return True
+
+            for _ in range(concurrency):
+                if not submit_next():
+                    break
+
+            while active:
+                done, _ = wait(active.keys(), return_when=FIRST_COMPLETED)
+                for future in done:
+                    active.pop(future)
+                    item = future.result()
+                    add_summary_item(item)
+                    submit_next()
+
+    summary_items.sort(
+        key=lambda item: (
+            str(item.get("task_id", "")),
+            str(item.get("skill_mode", "")),
+            str(item.get("run_id", "")),
         )
-        print(f"[wrote] {output_json}")
-        print(f"[wrote] {output_md}")
+    )
 
     if multiple or args.output_json or args.output_md:
         summary = {

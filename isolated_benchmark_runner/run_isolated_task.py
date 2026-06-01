@@ -14,6 +14,7 @@ import re
 import shutil
 import subprocess
 import sys
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -23,6 +24,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
 DEFAULT_TASK_JSON = REPO_ROOT / "datasets" / "task.json"
 RUNS_ROOT = REPO_ROOT / "runs"
+FILE_READER_SKILL = "benchmark-file-reader"
 
 AGENT_DEFAULT_KEYS_TO_COPY = {
     "model",
@@ -91,8 +93,8 @@ def discover_builtin_skills() -> list[str]:
     )
 
 
-def discover_dataset_skills() -> list[str]:
-    skills_dir = REPO_ROOT / "datasets" / "skills"
+def discover_dataset_skills(skills_root: Path | None = None) -> list[str]:
+    skills_dir = skills_root or (REPO_ROOT / "datasets" / "skills")
     if not skills_dir.is_dir():
         return []
     return sorted(
@@ -104,6 +106,8 @@ def discover_dataset_skills() -> list[str]:
 
 def load_tasks(task_json: Path) -> list[dict[str, Any]]:
     tasks = load_json(task_json)
+    if isinstance(tasks, dict):
+        return [tasks]
     if not isinstance(tasks, list) or not tasks:
         raise ValueError(f"No tasks found in {task_json}")
     valid_tasks = [task for task in tasks if isinstance(task, dict)]
@@ -175,6 +179,7 @@ def build_config(
     base_config: dict[str, Any],
     workspace: Path,
     allowed_skills: list[str],
+    skills_root: Path,
     skill_mode: str,
     timezone: str,
     max_tool_iterations: int | None,
@@ -191,7 +196,7 @@ def build_config(
     }
 
     disabled = set(discover_builtin_skills())
-    disabled.update(skill for skill in discover_dataset_skills() if skill not in allowed_skills)
+    disabled.update(skill for skill in discover_dataset_skills(skills_root) if skill not in allowed_skills)
     if skill_mode == "off":
         disabled.update(allowed_skills)
 
@@ -231,9 +236,8 @@ def build_config(
     }
 
 
-def copy_task_assets(task: dict[str, Any], workspace: Path) -> list[dict[str, str]]:
+def copy_task_assets(task: dict[str, Any], workspace: Path, data_root: Path) -> list[dict[str, str]]:
     copied: list[dict[str, str]] = []
-    datasets_root = REPO_ROOT / "datasets"
     for asset in task.get("data_assets", []):
         if not isinstance(asset, dict):
             continue
@@ -241,7 +245,7 @@ def copy_task_assets(task: dict[str, Any], workspace: Path) -> list[dict[str, st
         env_rel = asset.get("env_path")
         if not isinstance(src_rel, str) or not isinstance(env_rel, str):
             raise ValueError(f"Invalid data asset entry: {asset}")
-        src = datasets_root / src_rel
+        src = data_root / src_rel
         dst = workspace / env_rel
         if not src.is_file():
             raise FileNotFoundError(f"Task asset not found: {src}")
@@ -255,6 +259,7 @@ def copy_allowed_skills(
     *,
     allowed_skills: list[str],
     workspace: Path,
+    skills_root: Path,
     skill_mode: str,
     skill_policy: str,
 ) -> list[dict[str, str]]:
@@ -263,7 +268,7 @@ def copy_allowed_skills(
         return []
 
     copied: list[dict[str, str]] = []
-    source_root = REPO_ROOT / "datasets" / "skills"
+    source_root = skills_root
     target_root = workspace / "skills"
     target_root.mkdir(parents=True, exist_ok=True)
     for skill in allowed_skills:
@@ -660,6 +665,9 @@ def prepare_run(
     base_config: dict[str, Any],
     timezone: str,
     max_tool_iterations: int | None,
+    data_root: Path,
+    skills_root: Path,
+    file_reader_skill: bool,
     overwrite: bool,
 ) -> dict[str, Any]:
     task_id = str(task["task_id"])
@@ -673,11 +681,17 @@ def prepare_run(
         shutil.rmtree(run_root)
 
     workspace.mkdir(parents=True, exist_ok=True)
-    allowed_skills = [str(skill) for skill in task.get("skills", [])]
-    assets = copy_task_assets(task, workspace)
+    task_declared_skills = [str(skill) for skill in task.get("skills", [])]
+    allowed_skills = list(task_declared_skills)
+    helper_skills: list[str] = []
+    if file_reader_skill and skill_mode == "on" and FILE_READER_SKILL not in allowed_skills:
+        allowed_skills.append(FILE_READER_SKILL)
+        helper_skills.append(FILE_READER_SKILL)
+    assets = copy_task_assets(task, workspace, data_root)
     skills = copy_allowed_skills(
         allowed_skills=allowed_skills,
         workspace=workspace,
+        skills_root=skills_root,
         skill_mode=skill_mode,
         skill_policy=skill_policy,
     )
@@ -685,6 +699,7 @@ def prepare_run(
         base_config=base_config,
         workspace=workspace,
         allowed_skills=allowed_skills,
+        skills_root=skills_root,
         skill_mode=skill_mode,
         timezone=timezone,
         max_tool_iterations=max_tool_iterations,
@@ -719,11 +734,14 @@ def prepare_run(
         "run_id": run_id,
         "created_at": datetime.now().isoformat(),
         "repo_root": str(REPO_ROOT),
+        "data_root": str(data_root),
+        "skills_root": str(skills_root),
         "run_root": str(run_root),
         "workspace": str(workspace),
         "config": str(config_path),
         "allowed_skills": allowed_skills if skill_mode == "on" else [],
-        "task_declared_skills": allowed_skills,
+        "task_declared_skills": task_declared_skills,
+        "helper_skills": helper_skills if skill_mode == "on" else [],
         "copied_assets": assets,
         "copied_skills": skills,
     }
@@ -825,7 +843,7 @@ async def run_turns_direct_async(
                     record["error_path"] = str(error_path)
                 assert_allowed_skills(
                     workspace,
-                    list(manifest.get("task_declared_skills", [])),
+                    list(manifest.get("allowed_skills", [])),
                     str(manifest["skill_mode"]),
                 )
                 if agent_error and not continue_turns_on_error:
@@ -979,7 +997,7 @@ def run_turns_cli(
         try:
             assert_allowed_skills(
                 workspace,
-                list(manifest.get("task_declared_skills", [])),
+                list(manifest.get("allowed_skills", [])),
                 str(manifest["skill_mode"]),
             )
         except RuntimeError:
@@ -1024,6 +1042,75 @@ def run_turns(
     )
 
 
+def execute_prepared_run(
+    *,
+    task: dict[str, Any],
+    manifest: dict[str, Any],
+    python_exe: str,
+    keep_going: bool,
+    continue_turns_on_error: bool,
+    backend: str,
+    turn_timeout_seconds: int,
+) -> int:
+    print(f"[execute] {manifest['task_id']} {manifest['skill_mode']}: {manifest['run_root']}", flush=True)
+    code = run_turns(
+        manifest=manifest,
+        task=task,
+        python_exe=python_exe,
+        keep_going=keep_going,
+        continue_turns_on_error=continue_turns_on_error,
+        backend=backend,
+        turn_timeout_seconds=turn_timeout_seconds,
+    )
+    print(f"[done] {manifest['task_id']} {manifest['skill_mode']}: exit={code}", flush=True)
+    return code
+
+
+def execute_prepared_run_subprocess(
+    *,
+    manifest: dict[str, Any],
+    task_json: Path,
+    python_exe: str,
+    keep_going: bool,
+    continue_turns_on_error: bool,
+    backend: str,
+    turn_timeout_seconds: int,
+) -> int:
+    print(f"[execute] {manifest['task_id']} {manifest['skill_mode']}: {manifest['run_root']}", flush=True)
+    cmd = [
+        python_exe,
+        str(Path(__file__).resolve()),
+        "--task-json",
+        str(task_json),
+        "--execute-manifest",
+        str(Path(manifest["run_root"]) / "manifest.json"),
+        "--backend",
+        backend,
+        "--turn-timeout",
+        str(turn_timeout_seconds),
+    ]
+    if keep_going:
+        cmd.append("--keep-going")
+    if continue_turns_on_error:
+        cmd.append("--continue-turns-on-error")
+    result = subprocess.run(
+        cmd,
+        cwd=REPO_ROOT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    print(f"[done] {manifest['task_id']} {manifest['skill_mode']}: exit={result.returncode}", flush=True)
+    return int(result.returncode)
+
+
+def repeated_run_id(base_run_id: str, repeat_index: int, repeat_count: int) -> str:
+    if repeat_count <= 1:
+        return base_run_id
+    width = max(2, len(str(repeat_count)))
+    return f"{base_run_id}_rep{repeat_index:0{width}d}"
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Prepare and optionally execute isolated nanobot dataset tasks.",
@@ -1049,10 +1136,44 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument("--run-id", default=None)
+    parser.add_argument(
+        "--repeat",
+        type=int,
+        default=1,
+        help=(
+            "Repeat each selected task/skill-mode this many times. "
+            "When greater than 1, run ids become <run-id>_rep01, <run-id>_rep02, ..."
+        ),
+    )
     parser.add_argument("--base-config", default=None)
+    parser.add_argument(
+        "--data-root",
+        default=str(REPO_ROOT / "datasets"),
+        help="Root used to resolve each data_assets[].path. Defaults to repo datasets/.",
+    )
+    parser.add_argument(
+        "--skills-root",
+        default=str(REPO_ROOT / "datasets" / "skills"),
+        help="Root used to resolve task skill directories. Defaults to repo datasets/skills/.",
+    )
     parser.add_argument("--timezone", default="Asia/Shanghai")
+    parser.add_argument("--execute-manifest", default=None, help=argparse.SUPPRESS)
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--keep-going", action="store_true")
+    parser.add_argument(
+        "--concurrency",
+        type=int,
+        default=1,
+        help="Number of independent task runs to execute in parallel. Turns inside one run remain sequential.",
+    )
+    parser.add_argument(
+        "--file-reader-skill",
+        action="store_true",
+        help=(
+            "Add the optional benchmark-file-reader helper skill to skill_on runs. "
+            "Default is off so original skill_on/skill_off comparisons are unchanged."
+        ),
+    )
     parser.add_argument(
         "--continue-turns-on-error",
         action="store_true",
@@ -1084,11 +1205,28 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     task_json = Path(args.task_json).expanduser().resolve()
+    if args.execute_manifest:
+        manifest = load_json(Path(args.execute_manifest).expanduser().resolve())
+        tasks_by_id = {str(task.get("task_id")): task for task in load_tasks(task_json)}
+        task = tasks_by_id.get(str(manifest.get("task_id")))
+        if task is None:
+            raise ValueError(f"Task id from manifest is not present in task.json: {manifest.get('task_id')}")
+        return run_turns(
+            manifest=manifest,
+            task=task,
+            python_exe=args.python,
+            keep_going=args.keep_going,
+            continue_turns_on_error=args.continue_turns_on_error,
+            backend=args.backend,
+            turn_timeout_seconds=args.turn_timeout,
+        )
+
     task_ids = split_task_ids(args.task_id)
     if args.list_tasks:
         for task in load_tasks(task_json):
             print(task.get("task_id", ""))
         return 0
+    repeat_count = max(1, int(args.repeat))
     tasks = select_tasks(task_json=task_json, task_ids=task_ids, all_tasks=args.all_tasks)
     run_id = args.run_id or timestamp_run_id()
 
@@ -1099,45 +1237,109 @@ def main() -> int:
     )
     base_config = load_base_config(base_config_path)
     max_tool_iterations = args.max_tool_iterations if args.max_tool_iterations > 0 else None
+    data_root = Path(args.data_root).expanduser().resolve()
+    skills_root = Path(args.skills_root).expanduser().resolve()
+    if not data_root.is_dir():
+        raise FileNotFoundError(f"Data root not found: {data_root}")
+    if not skills_root.is_dir():
+        raise FileNotFoundError(f"Skills root not found: {skills_root}")
 
     modes = ["on", "off"] if args.skill_mode == "both" else [args.skill_mode]
     runs: list[tuple[dict[str, Any], dict[str, Any]]] = []
-    for task in tasks:
-        for mode in modes:
-            manifest = prepare_run(
-                task=task,
-                skill_mode=mode,
-                skill_policy=args.skill_policy,
-                run_id=run_id,
-                base_config=base_config,
-                timezone=args.timezone,
-                max_tool_iterations=max_tool_iterations,
-                overwrite=args.overwrite,
-            )
-            runs.append((task, manifest))
-            print(f"[prepared] {task.get('task_id')} {mode}: {manifest['run_root']}")
+    for repeat_index in range(1, repeat_count + 1):
+        current_run_id = repeated_run_id(run_id, repeat_index, repeat_count)
+        for task in tasks:
+            for mode in modes:
+                manifest = prepare_run(
+                    task=task,
+                    skill_mode=mode,
+                    skill_policy=args.skill_policy,
+                    run_id=current_run_id,
+                    base_config=base_config,
+                    timezone=args.timezone,
+                    max_tool_iterations=max_tool_iterations,
+                    data_root=data_root,
+                    skills_root=skills_root,
+                    file_reader_skill=args.file_reader_skill,
+                    overwrite=args.overwrite,
+                )
+                manifest["base_run_id"] = run_id
+                manifest["repeat_index"] = repeat_index
+                manifest["repeat_count"] = repeat_count
+                write_json(Path(manifest["run_root"]) / "manifest.json", manifest)
+                runs.append((task, manifest))
+                repeat_label = f" repeat={repeat_index}/{repeat_count}" if repeat_count > 1 else ""
+                print(f"[prepared] {task.get('task_id')} {mode}{repeat_label}: {manifest['run_root']}")
 
     if not args.execute:
         print(f"Prepared {len(runs)} run(s). Re-run with --execute to call nanobot.")
         return 0
 
     final_code = 0
-    for task, manifest in runs:
-        print(f"[execute] {manifest['task_id']} {manifest['skill_mode']}: {manifest['run_root']}")
-        code = run_turns(
-            manifest=manifest,
-            task=task,
-            python_exe=args.python,
-            keep_going=args.keep_going,
-            continue_turns_on_error=args.continue_turns_on_error,
-            backend=args.backend,
-            turn_timeout_seconds=args.turn_timeout,
-        )
-        final_code = final_code or code
-        print(f"[done] {manifest['task_id']} {manifest['skill_mode']}: exit={code}")
-        if code != 0 and not args.keep_going:
-            print("Stopped after run error. Re-run with --keep-going to continue later runs after failures.")
-            break
+    concurrency = max(1, int(args.concurrency))
+    if concurrency == 1:
+        for task, manifest in runs:
+            code = execute_prepared_run(
+                task=task,
+                manifest=manifest,
+                python_exe=args.python,
+                keep_going=args.keep_going,
+                continue_turns_on_error=args.continue_turns_on_error,
+                backend=args.backend,
+                turn_timeout_seconds=args.turn_timeout,
+            )
+            final_code = final_code or code
+            if code != 0 and not args.keep_going:
+                print("Stopped after run error. Re-run with --keep-going to continue later runs after failures.")
+                break
+        return final_code
+
+    print(f"[parallel] executing up to {concurrency} independent run(s) at a time", flush=True)
+    run_iter = iter(runs)
+    active: dict[Any, tuple[dict[str, Any], dict[str, Any]]] = {}
+    with ThreadPoolExecutor(max_workers=concurrency) as executor:
+        def submit_next() -> bool:
+            try:
+                task, manifest = next(run_iter)
+            except StopIteration:
+                return False
+            future = executor.submit(
+                execute_prepared_run_subprocess,
+                manifest=manifest,
+                task_json=task_json,
+                python_exe=args.python,
+                keep_going=args.keep_going,
+                continue_turns_on_error=args.continue_turns_on_error,
+                backend=args.backend,
+                turn_timeout_seconds=args.turn_timeout,
+            )
+            active[future] = (task, manifest)
+            return True
+
+        for _ in range(concurrency):
+            if not submit_next():
+                break
+
+        while active:
+            done, _ = wait(active.keys(), return_when=FIRST_COMPLETED)
+            for future in done:
+                task, manifest = active.pop(future)
+                try:
+                    code = int(future.result())
+                except Exception as exc:
+                    code = 1
+                    print(
+                        f"[done] {manifest['task_id']} {manifest['skill_mode']}: "
+                        f"exit=1 ({type(exc).__name__}: {exc})",
+                        flush=True,
+                    )
+                final_code = final_code or code
+                if code != 0 and not args.keep_going:
+                    for pending in active:
+                        pending.cancel()
+                    print("Stopped after run error. Re-run with --keep-going to continue later runs after failures.")
+                    return final_code
+                submit_next()
     return final_code
 
 
